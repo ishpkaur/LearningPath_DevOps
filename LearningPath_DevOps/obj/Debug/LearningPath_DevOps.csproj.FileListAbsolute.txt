@@ -1,0 +1,9 @@
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\bin\LearningPath_DevOps.dll.config
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\bin\LearningPath_DevOps.dll
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\bin\LearningPath_DevOps.pdb
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\bin\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.xml
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\obj\Debug\LearningPath_DevOps.csprojResolveAssemblyReference.cache
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\obj\Debug\LearningPath_DevOps.csproj.CoreCompileInputs.cache
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\obj\Debug\LearningPath_DevOps.dll
+C:\Users\ishpkaur\source\repos\LearningPath_DevOps\LearningPath_DevOps\obj\Debug\LearningPath_DevOps.pdb
