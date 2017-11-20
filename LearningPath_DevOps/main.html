@@ -32,10 +32,37 @@
                 background: orange;
                 z-index: -1;
             }
-
+        img::before {
+            content: '';
+            position: absolute;
+            top: .9em;
+            left: -4em;
+            width: 4em;
+            height: .2em;
+            background: orange;
+            z-index: -1;
+        }
             div:first-child::before {
                 display: none;
             }
+            img
+            {
+                height:60px;
+                width:60px;
+            }
+        hr {
+            display:block;
+            height: 1px;
+            border: 0;
+            border-top: 2px solid orange;
+            margin: 1em 0;
+            padding: 0;
+            width:50px;
+        }
+        #d {
+            -webkit-clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+            clip-path: polygon(50% 0%, 90% 20%, 100% 60%, 75% 100%, 25% 100%, 0% 60%, 10% 20%);
+        }
     </style>
 </head>
 <body>
@@ -48,5 +75,8 @@
     <div></div>
     <div></div>
     <div></div>
+    <img src="Picture1.png" />
+    <hr />
+    < id="d"></>
 </body>
 </html>
