@@ -1,5 +1,13 @@
-﻿{
-  "description": "Practices the fundamentals of DevOps",
-  "Id": 1,
-  "color": "yellow" 
-}
+﻿  [
+    {
+      "description": "Practices the fundamentals of DevOps",
+      "id": 1,
+      "color": "yellow"
+    },
+    {
+      "description": "Utilizes own VSTS...",
+      "id": 2,
+      "color": "yellow"
+    }
+  ]
+
