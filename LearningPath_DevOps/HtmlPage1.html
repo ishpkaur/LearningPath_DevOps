@@ -26,6 +26,17 @@
         }
         .vertical{
             display:inline-block;
+            background-color:orange;
+        }
+        #rcorners2 {
+            border-radius: 25px;
+            border: 1px solid #0000FF;
+            padding: 20px;
+            width: 150px;
+            height: 120px;
+            position:absolute;
+            right:50px;
+            top:5px;
         }
     </style>
 </head>
@@ -33,6 +44,7 @@
     <h1>Learning Paths - DevOps Transformation</h1>
     <div class="modal-body">
         <div class="row-fluid">
+            <p id="rcorners2"></p>
             <button type="button" class="btn  btn-xl" ng-click="selected(0)"></button>
             <hr class="horizontal" />
             <button type="button" class="btn  btn-xl" ng-click="selected(2)"><br></button>
@@ -50,7 +62,7 @@
             <button type="button" uncheckable class="btn  btn-xl" ng-click="selected(8)"><br></button>
             <hr class="horizontal" />
             <a href="https://www.google.com"><img src="Picture1.png" /></a>
-            <hr class="vertical" width="1" size="70">
+            <hr class="vertical" width="1" size="30">
         </div>
         </div>
 </body>
