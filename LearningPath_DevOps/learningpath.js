@@ -46,13 +46,16 @@ var Circle = function (circleX, circleY, radius, color) {
 function ShowDataOnCanvas(obj) {
     var circles = [];
 
-    circles.push(new Circle(100, 40, 30, "black"));
-    circles.push(new Circle(205, 40, 30, "red"));
-    circles.push(new Circle(310, 40, 30, "green"));
-    circles.push(new Circle(415, 40, 30, "yellow"));
-    circles.push(new Circle(520, 40, 30, "blue"));
-    circles.push(new Circle(625, 40, 30, "brown"));
-    for (var i = 0; i < circles.length; i++) {
+    //circles.push(new Circle(100, 40, 30, "black"));
+    //circles.push(new Circle(205, 40, 30, "red"));
+    //circles.push(new Circle(310, 40, 30, "green"));
+    //circles.push(new Circle(415, 40, 30, "yellow"));
+    //circles.push(new Circle(520, 40, 30, "blue"));
+    //circles.push(new Circle(625, 40, 30, "brown"));
+    var circleX = 100;
+    for (var i = 0; i < obj.length; i++) {
+        circles.push(new Circle(circleX, 40, 30, "black"));
         circles[i].draw("pathCanvas");
+        circleX += 100;
     }
 }
