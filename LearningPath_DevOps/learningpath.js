@@ -1,11 +1,10 @@
 $(document).ready(function() {
     var json = $.getJSON("learningpath.json",
         function(json) {
-            //console.log(json);
             ShowDataOnCanvas(json);
-            //return json;
         });
-
+    var c = document.getElementById("pathCanvas");
+    var ctx = c.getContext("2d");
     var Circle = function(circleX, circleY, radius, color, description) {
 
         this.circleX = circleX;
@@ -13,20 +12,20 @@ $(document).ready(function() {
         this.radius = radius;
         this.color = color;
 
-        this.drawCircle = function(pathCanvas) {
-            var c = document.getElementById(pathCanvas);
-            var ctx = c.getContext("2d");
+        this.drawCircle = function() {
             ctx.beginPath();
             ctx.fillText(description, circleX, circleY - 30);
+            ctx.fillStyle = "black";
             ctx.strokeStyle = this.color;
             ctx.arc(this.circleX, this.circleY, this.radius, 0, 2 * Math.PI);
             ctx.stroke();
         };
+        this.drawLines = function () {
 
-        this.drawBadge = function(spikes, outerRadius, innerRadius, pathCanvas) {
-            var c = document.getElementById(pathCanvas);
-            var ctx = c.getContext("2d");
 
+        };
+        this.drawBadge = function(spikes, outerRadius, innerRadius) {
+            ctx.save();
             var rot = Math.PI / 2 * 3;
             var x = this.circleX;
             var y = this.circleY;
@@ -49,11 +48,11 @@ $(document).ready(function() {
             ctx.lineTo(this.circleX, this.circleY - outerRadius);
             ctx.closePath();
             ctx.lineWidth = 5;
-            ctx.strokeStyle = "blue";
+            ctx.strokeStyle = "orange";
             ctx.stroke();
-            ctx.fillStyle = "skyblue";
+            ctx.fillStyle = "rgba(154, 71, 14, 0.4)";
             ctx.fill();
-
+            ctx.restore();
         }
 
     };
@@ -71,16 +70,16 @@ $(document).ready(function() {
                     var index = i + j;
                     circles.push(new Circle(circleX, circleY, 20, "black", obj[i][j].description));
                     if (obj[i][j].type === "circle")
-                        circles[index].drawCircle("pathCanvas");
+                        circles[index].drawCircle();
                     circleX += 100;
                 }
                 continue;
             }
             circles.push(new Circle(circleX, circleY, 20, "black", obj[i].description));
             if (obj[i].type === "circle")
-                circles[i].drawCircle("pathCanvas");
+                circles[i].drawCircle();
             if (obj[i].type === "badge")
-                circles[i].drawBadge(20, 30, 25, "pathCanvas");
+                circles[i].drawBadge(20, 30, 25);
             circleX += 100;
         }
     }
