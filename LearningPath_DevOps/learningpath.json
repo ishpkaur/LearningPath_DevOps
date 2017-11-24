@@ -57,19 +57,39 @@
     {
       "description": "new line",
       "id": 10,
-      "color": "blue",
+      "color": "red",
       "type": "circle"
     },
     {
       "description": "new line 2",
       "id": 11,
-      "color": "blue",
+      "color": "red",
       "type": "circle"
     },
     {
       "description": "new line 3",
       "id": 12,
-      "color": "blue",
+      "color": "red",
+      "type": "circle"
+    },
+    {
+      "description": "new line 4",
+      "id": 13,
+      "color": "red",
+      "type": "circle"
+    }
+  ],
+  [
+    {
+      "description": "new line 5",
+      "id": 14,
+      "color": "green",
+      "type": "circle"
+    },
+    {
+      "description": "new line 6",
+      "id": 15,
+      "color": "green",
       "type": "circle"
     }
   ]
