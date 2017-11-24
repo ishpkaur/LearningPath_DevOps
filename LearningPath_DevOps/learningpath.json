@@ -1,47 +1,49 @@
 ﻿[
+  {
+    "description": "Practices the fundamentals of DevOps",
+    "id": 1,
+    "color": "yellow"
+  },
+  {
+    "description": "Utilizes own VSTS...",
+    "id": 2,
+    "color": "yellow"
+  },
+  {
+    "description": "Performs basic operations..",
+    "id": 3,
+    "color": "yellow"
+  },
+  {
+    "description": "Starts a build and works with the results",
+    "id": 4,
+    "color": "yellow"
+  },
+  {
+    "description": "Understands the project management tooling",
+    "id": 5,
+    "color": "yellow"
+  },
+  {
+    "description": "Writes testable and maintainable code",
+    "id": 6,
+    "color": "yellow"
+  },
+  {
+    "description": "Understands the fundamentals of Release Management",
+    "id": 7,
+    "color": "yellow"
+  },
+  {
+    "description": "Understands how testing with VSTS works",
+    "id": 8,
+    "color": "yellow"
+  },
+  [
     {
-      "description": "Practices the fundamentals of DevOps",
-      "id": 1,
-      "color": "yellow"
-    },
-    {
-      "description": "Utilizes own VSTS...",
-      "id": 2,
-      "color": "yellow"
-    },
-    {
-      "description": "Performs basic operations..",
-      "id": 3,
-      "color": "yellow"
-    },
-    {
-      "description": "Starts a build and works with the results",
-      "id": 4,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands the project management tooling",
-      "id": 5,
-      "color": "yellow"
-    },
-    {
-      "description": "Writes testable and maintainable code",
-      "id": 6,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands the fundamentals of Release Management",
-      "id": 7,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands how testing with VSTS works",
-      "id": 8,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands how testing with VSTS works",
+      "description": "Understands and explains common Agile methodologies",
       "id": 9,
-      "color": "yellow"
+      "color": "red"
     }
   ]
+]

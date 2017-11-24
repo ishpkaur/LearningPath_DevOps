@@ -1,7 +1,11 @@
 ﻿var json = $.getJSON("learningpath.json", function (json) {
     ShowDataOnCanvas(json);
-    //return json;
 });
+
+var lineWidth = 5;
+var cols = 3;
+var rows = 2;
+var distance = 50;
 
 var Circle = function (circleX, circleY, radius, color, description) {
 
@@ -13,7 +17,7 @@ var Circle = function (circleX, circleY, radius, color, description) {
     this.draw = function (pathCanvas) {
         var c = document.getElementById(pathCanvas);
         var ctx = c.getContext("2d");
-        ctx.fillText(description, circleX, 10);
+        ctx.fillText(description, circleX, 10, 100);
         ctx.beginPath();
         ctx.strokeStyle = this.color;
         ctx.arc(this.circleX, this.circleY, this.radius, 0, 2 * Math.PI);
