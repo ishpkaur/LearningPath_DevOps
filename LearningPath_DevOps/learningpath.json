@@ -1,47 +1,77 @@
 ﻿[
+  {
+    "description": "Blactices the fundamentals of DevOps",
+    "id": 1,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Utilizes own VSTS...",
+    "id": 2,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Performs basic operations..",
+    "id": 3,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Starts a build and works with the results",
+    "id": 4,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Understands the project management tooling",
+    "id": 5,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Writes testable and maintainable code",
+    "id": 6,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Understands the fundamentals of Release Management",
+    "id": 7,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Understands how testing with VSTS works",
+    "id": 8,
+    "color": "yellow",
+    "type": "circle"
+  },
+  {
+    "description": "Bronze badge",
+    "id": 9,
+    "color": "yellow",
+    "type": "badge"
+  },
+  [
     {
-      "description": "Practices the fundamentals of DevOps",
-      "id": 1,
-      "color": "yellow"
+      "description": "new line",
+      "id": 10,
+      "color": "blue",
+      "type": "circle"
     },
     {
-      "description": "Utilizes own VSTS...",
-      "id": 2,
-      "color": "yellow"
+      "description": "new line 2",
+      "id": 11,
+      "color": "blue",
+      "type": "circle"
     },
     {
-      "description": "Performs basic operations..",
-      "id": 3,
-      "color": "yellow"
-    },
-    {
-      "description": "Starts a build and works with the results",
-      "id": 4,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands the project management tooling",
-      "id": 5,
-      "color": "yellow"
-    },
-    {
-      "description": "Writes testable and maintainable code",
-      "id": 6,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands the fundamentals of Release Management",
-      "id": 7,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands how testing with VSTS works",
-      "id": 8,
-      "color": "yellow"
-    },
-    {
-      "description": "Understands how testing with VSTS works",
-      "id": 9,
-      "color": "yellow"
+      "description": "new line 3",
+      "id": 12,
+      "color": "blue",
+      "type": "circle"
     }
   ]
+]
+
