@@ -41,7 +41,6 @@ $(document).ready(function() {
             var step = Math.PI / spikes;
 
             ctx.save();
-           // ctx.strokeSyle = "#000";
             ctx.beginPath();
             ctx.moveTo(this.circleX, this.circleY - outerRadius);
             for (var i = 0; i < spikes; i++) {
@@ -84,17 +83,17 @@ $(document).ready(function() {
                     if (obj[i][j].type === "circle") {
                         circles[circles.length - 1].drawCircle();
                         if ((j + 1) !== obj[i].length) {
-                            circles[i].drawLine(lineLeftX, lineLeftX + 70, circleY, obj[i][j].color);
+                            circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
                         }
                             
                     }
                     if (obj[i][j].type === "badge") {
                         circles[circles.length - 1].drawBadge(20, 30, 25, "silver", obj[i][j].color);
                         if ((j + 1) !== obj[i].length) {
-                            circles[i].drawLine(lineLeftX + 12, lineLeftX + 70, circleY, obj[i][j].color);
+                            circles[i].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
                         }
                     }
-                    circleX += 100;
+                    circleX += 80;
                 }
                 continue;
             }
@@ -103,15 +102,14 @@ $(document).ready(function() {
             if (obj[i].type === "circle") {
                 circles[i].drawCircle();
                 if ((i + 1) !== obj.length) {
-                    circles[i].drawLine(lineLeftX, lineLeftX + 70, circleY, obj[i].color);
+                    circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i].color);
                 }
                 
             }
                 
             if (obj[i].type === "badge")
-                circles[i].drawBadge(20, 30, 25, "rgba(160,71, 29,0.5)", obj[i].color);
-            circleX += 100;
-            
+                circles[i].drawBadge(20, 30, 25, "#CD853F", obj[i].color);
+            circleX += 80;
         }
     }
 
