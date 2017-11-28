@@ -4,19 +4,20 @@ $(document).ready(function() {
         });
     var c = document.getElementById("pathCanvas");
     var ctx = c.getContext("2d");
-    var Circle = function(circleX, circleY, radius, color, description) {
+
+    var Circle = function (circleX, circleY, radius, color, description) {
 
         this.circleX = circleX;
         this.circleY = circleY;
         this.radius = radius;
         this.color = color;
-
         this.drawCircle = function() {
             
             ctx.beginPath();
-            ctx.textAlign = "center";
-            var test = getLines(ctx, description, 40);
-            ctx.fillText(test, circleX, circleY - 30);
+            var text = getLines(ctx, description, 40);
+            ctx.fillText(text, circleX, circleY - 30);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
             ctx.strokeStyle = this.color;
             ctx.arc(this.circleX, this.circleY, this.radius, 0, 2 * Math.PI);
             ctx.stroke();
@@ -31,17 +32,16 @@ $(document).ready(function() {
             ctx.strokeStyle = lineColor;
             ctx.stroke();
             ctx.restore();
-            //ctx.closePath();
         }
 
-        this.drawBadge = function(spikes, outerRadius, innerRadius) {
+        this.drawBadge = function(spikes, outerRadius, innerRadius,backgroundColor, strokeColor) {
             var rot = Math.PI / 2 * 3;
             var x = this.circleX;
             var y = this.circleY;
             var step = Math.PI / spikes;
 
             ctx.save();
-            ctx.strokeSyle = "#000";
+           // ctx.strokeSyle = "#000";
             ctx.beginPath();
             ctx.moveTo(this.circleX, this.circleY - outerRadius);
             for (var i = 0; i < spikes; i++) {
@@ -58,9 +58,9 @@ $(document).ready(function() {
             ctx.lineTo(this.circleX, this.circleY - outerRadius);
             ctx.closePath();
             ctx.lineWidth = 5;
-            ctx.strokeStyle = "blue";
+            ctx.strokeStyle = strokeColor;
             ctx.stroke();
-            ctx.fillStyle = "skyblue";
+            ctx.fillStyle = backgroundColor;
             ctx.fill();
             ctx.closePath();
             ctx.restore();
@@ -71,41 +71,46 @@ $(document).ready(function() {
     function showDataOnCanvas(obj) {
         var circles = [];
 
-        var circleX = 100;
+        var circleX = 60;
         var circleY = 40;
         for (var i = 0; i < obj.length; i++) {
-            var lineLeftX = circleX + 20;
+            var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
                 circleY += 100;
-                circleX = 100;
+                circleX = 60;
                 for (var j = 0; j < obj[i].length; j++) {
-                    lineLeftX = circleX + 20;
-                    // var index = i + j;
-                    circles.push(new Circle(circleX, circleY, 20, "black", obj[i][j].description));
+                    lineLeftX = circleX + 15;
+                    circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description));
                     if (obj[i][j].type === "circle") {
                         circles[circles.length - 1].drawCircle();
                         if ((j + 1) !== obj[i].length) {
-                            circles[i].drawLine(lineLeftX, lineLeftX + 60, circleY, obj[i][j].color);
+                            circles[i].drawLine(lineLeftX, lineLeftX + 70, circleY, obj[i][j].color);
                         }
                             
                     }
-                        
+                    if (obj[i][j].type === "badge") {
+                        circles[circles.length - 1].drawBadge(20, 30, 25, "silver", obj[i][j].color);
+                        if ((j + 1) !== obj[i].length) {
+                            circles[i].drawLine(lineLeftX + 12, lineLeftX + 70, circleY, obj[i][j].color);
+                        }
+                    }
                     circleX += 100;
                 }
                 continue;
             }
             
-            circles.push(new Circle(circleX, circleY, 20, "black", obj[i].description));
+            circles.push(new Circle(circleX, circleY, 15, "black", obj[i].description));
             if (obj[i].type === "circle") {
                 circles[i].drawCircle();
                 if ((i + 1) !== obj.length) {
-                    circles[i].drawLine(lineLeftX, lineLeftX + 60, circleY, obj[i].color);
+                    circles[i].drawLine(lineLeftX, lineLeftX + 70, circleY, obj[i].color);
                 }
                 
             }
                 
             if (obj[i].type === "badge")
-                circles[i].drawBadge(20, 30, 25);circleX += 100;
+                circles[i].drawBadge(20, 30, 25, "rgba(160,71, 29,0.5)", obj[i].color);
+            circleX += 100;
             
         }
     }
