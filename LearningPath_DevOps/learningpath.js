@@ -11,11 +11,10 @@ $(document).ready(function() {
         this.circleY = circleY;
         this.radius = radius;
         this.color = color;
-        this.drawCircle = function() {
-
+        this.drawCircle = function () {
             ctx.beginPath();
-            multiFillText(description, circleX, circleY - 55, 12, 80);
             ctx.textAlign = 'center';
+            multiFillText(description, circleX, circleY - 55, 12, 80);
             ctx.textBaseline = 'top';
             ctx.strokeStyle = this.color;
             ctx.arc(this.circleX, this.circleY, this.radius, 0, 2 * Math.PI);
@@ -75,7 +74,7 @@ $(document).ready(function() {
         for (var i = 0; i < obj.length; i++) {
             var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
-                circleY += 130;
+                circleY += 120;
                 circleX = 60;
                 for (var j = 0; j < obj[i].length; j++) {
                     lineLeftX = circleX + 15;
@@ -88,7 +87,7 @@ $(document).ready(function() {
                             
                     }
                     if (obj[i][j].type === "badge") {
-                        circles[circles.length - 1].drawBadge(20, 30, 25, "silver", obj[i][j].color);
+                        circles[circles.length - 1].drawBadge(22, 35, 25, "silver", obj[i][j].color);
                         if ((j + 1) !== obj[i].length) {
                             circles[i].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
                         }
@@ -108,7 +107,7 @@ $(document).ready(function() {
             }
                 
             if (obj[i].type === "badge")
-                circles[i].drawBadge(20, 30, 25, "#CD853F", obj[i].color);
+                circles[i].drawBadge(22, 35, 25, "#CD853F", obj[i].color);
             circleX += 80;
         }
     }
