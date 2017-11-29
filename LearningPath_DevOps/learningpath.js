@@ -12,10 +12,9 @@ $(document).ready(function() {
         this.radius = radius;
         this.color = color;
         this.drawCircle = function() {
-            
+
             ctx.beginPath();
-            var text = getLines(ctx, description, 40);
-            ctx.fillText(text, circleX, circleY - 30);
+            multiFillText(description, circleX, circleY - 55, 12, 80);
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             ctx.strokeStyle = this.color;
@@ -23,6 +22,7 @@ $(document).ready(function() {
             ctx.stroke();
             ctx.closePath();
         };
+
 
         this.drawLine = function (lineLeftX, lineRightX, posY, lineColor) {
             ctx.save();
@@ -71,11 +71,11 @@ $(document).ready(function() {
         var circles = [];
 
         var circleX = 60;
-        var circleY = 40;
+        var circleY = 70;
         for (var i = 0; i < obj.length; i++) {
             var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
-                circleY += 100;
+                circleY += 130;
                 circleX = 60;
                 for (var j = 0; j < obj[i].length; j++) {
                     lineLeftX = circleX + 15;
@@ -113,22 +113,74 @@ $(document).ready(function() {
         }
     }
 
-    function getLines(contx, text, maxWidth) {
-        var words = text.split(" ");
-        var lines = [];
-        var currentLine = words[0];
 
-        for (var i = 1; i < words.length; i++) {
-            var word = words[i];
-            var width = contx.measureText(currentLine + " " + word).width;
-            if (width < maxWidth) {
-                currentLine += " " + word;
-            } else {
-                lines.push(currentLine);
-                currentLine = word;
+    var multiFillText = function (text, x, y, lineHeight, fitWidth) {
+        var draw = x !== null && y !== null;
+
+        text = text.replace(/(\r\n|\n\r|\r|\n)/g, "\n");
+        sections = text.split("\n");
+
+        var i,
+            str,
+            wordWidth,
+            words,
+            currentLine = 0,
+            maxHeight = 0,
+            maxWidth = 0;
+
+        var printNextLine = function (str) {
+            if (draw) {
+                ctx.fillText(str, x, y + (lineHeight * currentLine));
+            }
+
+            currentLine++;
+            wordWidth = ctx.measureText(str).width;
+            if (wordWidth > maxWidth) {
+                maxWidth = wordWidth;
+            }
+        };
+
+        for (i = 0; i < sections.length; i++) {
+            words = sections[i].split(' ');
+            index = 1;
+
+            while (words.length > 0 && index <= words.length) {
+
+                str = words.slice(0, index).join(' ');
+                wordWidth = ctx.measureText(str).width;
+
+                if (wordWidth > fitWidth) {
+                    if (index === 1) {
+                        str = words.slice(0, 1).join(' ');
+                        words = words.splice(1);
+                    } else {
+                        str = words.slice(0, index - 1).join(' ');
+                        words = words.splice(index - 1);
+                    }
+
+                    printNextLine(str);
+
+                    index = 1;
+                } else {
+                    index++;
+                }
+            }
+            if (index > 0) {
+                printNextLine(words.join(' '));
             }
         }
-        lines.push(currentLine);
-        return lines;
+
+        maxHeight = lineHeight * (currentLine);
+
+        if (!draw) {
+            return {
+                height: maxHeight,
+                width: maxWidth
+            };
+        }
+    };
+
+    var multiMeasureText = function (text, lineHeight, fitWidth) {
+        return multiFillText(text, null, null, lineHeight, fitWidth);
     }
 });

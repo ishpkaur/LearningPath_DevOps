@@ -55,73 +55,73 @@
   },
   [
     {
-      "description": "new line",
+      "description": "Understands and explains common Agile methodologies",
       "id": 10,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 2",
+      "description": "Certified Scrum Master with real world experience",
       "id": 11,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 3",
+      "description": "Understands and explains the TFS Project Management tooling in depth",
       "id": 12,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 4",
+      "description": "Uses the TFS Query capabilities",
       "id": 13,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 5",
+      "description": "Uses TFS Reporting",
       "id": 14,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 6",
+      "description": "Customizes TFS processes",
       "id": 15,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "Silver Badge",
+      "description": "DevOps Plan",
       "id": 16,
       "color": "red",
       "type": "badge"
     },
     {
-      "description": "new line 7",
+      "description": "Understands and explains specialized Agile Methodologies",
       "id": 17,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 8",
+      "description": "Creates new reports and dashboards",
       "id": 18,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 9",
+      "description": "Uses the PowerBI tooling",
       "id": 19,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 10",
+      "description": "Helps organizations implement portfolio management",
       "id": 20,
       "color": "red",
       "type": "circle"
     },
     {
-      "description": "new line 11",
+      "description": "Understands and works with third party PM tooling",
       "id": 21,
       "color": "red",
       "type": "circle"
@@ -129,97 +129,97 @@
   ],
   [
     {
-      "description": "new line 12",
+      "description": "Performs code reviews",
       "id": 22,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 13",
+      "description": "Uses the architecture tooling",
       "id": 23,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 14",
+      "description": "Designs and implements basic architectures",
       "id": 24,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 15",
+      "description": "Implements code quality standards",
       "id": 25,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 16",
+      "description": "Uses numerous design patterns and principles",
       "id": 26,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 17",
+      "description": "Expertly creates unit tests and testable code",
       "id": 27,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 18",
+      "description": "Uses Diagnostic Tooling",
       "id": 28,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 19",
+      "description": "Implements advanced branching strategies",
       "id": 29,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 20",
+      "description": "Knows and uses Git",
       "id": 30,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "Silver Badge",
+      "description": "DevOps Code",
       "id": 31,
       "color": "green",
       "type": "badge"
     },
     {
-      "description": "new line 21",
+      "description": "Uses Roslyn to create new code analyzers",
       "id": 32,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 22",
+      "description": "Creates extensions for VS and VSTS",
       "id": 33,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 23",
+      "description": "Contributes to Open Source projects",
       "id": 34,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 24",
+      "description": "Designs Micro Services, CQRS and Event Sourcing architectures",
       "id": 35,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 25",
+      "description": "Knows third party tools that extend the Microsoft stack",
       "id": 36,
       "color": "green",
       "type": "circle"
     },
     {
-      "description": "new line 26",
+      "description": "Performs cross platform development",
       "id": 37,
       "color": "green",
       "type": "circle"
@@ -227,103 +227,103 @@
   ],
   [
     {
-      "description": "new line 27",
+      "description": "Configures build agents",
       "id": 38,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 28",
+      "description": "Creates build definitions",
       "id": 39,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 29",
+      "description": "Configures and uses artificat repositories",
       "id": 40,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 30",
+      "description": "Configures and uses Release Management",
       "id": 41,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 31",
+      "description": "Deploys basic applications",
       "id": 42,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 32",
+      "description": "Uses PowerShell and PowerShell DSC",
       "id": 43,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 33",
+      "description": "Uses Azure for dev/test scenarios",
       "id": 44,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 34",
+      "description": "DevOps Build & Deploy",
       "id": 45,
       "color": "blue",
       "type": "badge"
     },
     {
-      "description": "new line 35",
+      "description": "Creates custom build tasks",
       "id": 46,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 36",
+      "description": "Creates cross platform builds",
       "id": 47,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 37",
+      "description": "Understands and uses third party build tools",
       "id": 49,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 38",
+      "description": "Understands and uses third party release tools",
       "id": 50,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 39",
+      "description": "Deploys complex applications",
       "id": 51,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 40",
+      "description": "Creates DSC resources",
       "id": 52,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 41",
+      "description": "Creates custom release tasks",
       "id": 53,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 42",
+      "description": "Creates cross platform releases",
       "id": 54,
       "color": "blue",
       "type": "circle"
     },
     {
-      "description": "new line 43",
+      "description": "Uses containerization",
       "id": 55,
       "color": "blue",
       "type": "circle"
@@ -331,85 +331,85 @@
   ],
   [
     {
-      "description": "new line 44",
+      "description": "Familiar with different testing strategies",
       "id": 56,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 44",
+      "description": "Knows Test Center in depth",
       "id": 56,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 45",
+      "description": "Uses Lab Center",
       "id": 57,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 46",
+      "description": "Implements performance and load tests",
       "id": 58,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 47",
+      "description": "Uses Application Insights",
       "id": 59,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 48",
+      "description": "Automates tests",
       "id": 60,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 45",
+      "description": "Implements logging and traceabilility",
       "id": 57,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 46",
+      "description": "DevOps Test Monitor & Learn",
       "id": 58,
       "color": "#F4A460",
       "type": "badge"
     },
     {
-      "description": "new line 47",
+      "description": "Knows and uses third party tools",
       "id": 59,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 48",
+      "description": "Uses expert test methods (e.g. BDD, ATDD)",
       "id": 60,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 49",
+      "description": "Works with A-B/Canary testing features",
       "id": 61,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 50",
+      "description": "Implements custom performance counters with AI",
       "id": 62,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 51",
+      "description": "Performs cross platform testing",
       "id": 63,
       "color": "#F4A460",
       "type": "circle"
     },
     {
-      "description": "new line 52",
+      "description": "Performs cross-platform monitoring",
       "id": 64,
       "color": "#F4A460",
       "type": "circle"
@@ -479,6 +479,5 @@
       "type": "circle"
     }
   ]
-
 ]
 
