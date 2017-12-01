@@ -73,9 +73,17 @@ $(document).ready(function() {
     };
 
     function showDataOnCanvas(obj) {
+
+        var arrayCount = 0;
+        for (var array = 0; array < obj.length; array++) {
+            if (Array.isArray(obj[array])) {
+                arrayCount++;
+            }
+        }
         var circles = [];
 
-        var circleX = 60;
+        var circleX = 100;
+        // var circleX = appconfig.posX;
         var circleY = 70;
         var countPaths = 0;
 
@@ -83,18 +91,23 @@ $(document).ready(function() {
             var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
                 if (countPaths === 0) {
+                    drawSplitLines(circleX, circleY, obj[i-1].color, arrayCount);
                     circleY += 250;
                 } else {
                     circleY += 120;
                 }
-                circleX = 60;
+                circleX = 100;
                 for (var j = 0; j < obj[i].length; j++) {
+                    
                     lineLeftX = circleX + 15;
                     circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description));
                     if (obj[i][j].type === "circle") {
                         circles[circles.length - 1].drawCircle();
                         if ((j + 1) !== obj[i].length) {
                             circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
+                            if (j === 0) {
+                                circles[i].drawLine(circleX - 15, circleX - 50, circleY, "orange")
+                            }
                         }
                             
                     }
@@ -125,6 +138,34 @@ $(document).ready(function() {
         }
     }
 
+    var drawSplitLines = function (posX, posY, lineColor, pathCount) {
+        var endPosY = pathCount * 120 + (posY + 130);
+        ctx.save();
+        // with posX and posY you should have the position of the badge. From there you can start drawing a line
+
+        // Go down from badge
+        ctx.beginPath();
+        ctx.moveTo(posX - 80, posY + 35);
+        ctx.lineTo(posX - 80, posY + 100);
+        ctx.strokeStyle = lineColor;
+        ctx.stroke();
+
+        // Go left
+        ctx.moveTo(posX - 80, posY + 100);
+        ctx.lineTo(100 - 50, posY + 100);
+        ctx.strokeStyle = lineColor;
+        ctx.stroke();
+
+
+        // Go down final time
+        ctx.moveTo(100 - 50, posY + 100);
+        ctx.lineTo(100 - 50, endPosY);
+        ctx.strokeStyle = lineColor;
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+    }
 
     var multiFillText = function (text, x, y, lineHeight, fitWidth) {
         var draw = x !== null && y !== null;
