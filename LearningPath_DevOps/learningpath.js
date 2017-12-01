@@ -77,11 +77,13 @@ $(document).ready(function() {
 
         var circleX = 60;
         var circleY = 70;
+        var countPaths = 0;
+
         for (var i = 0; i < obj.length; i++) {
             var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
-                if (i === 0) {
-                    circleY += 180;
+                if (countPaths === 0) {
+                    circleY += 250;
                 } else {
                     circleY += 120;
                 }
@@ -104,6 +106,7 @@ $(document).ready(function() {
                     }
                     circleX += 80;
                 }
+                countPaths++;
                 continue;
             }
             
