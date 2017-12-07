@@ -245,27 +245,28 @@ $(document).ready(function() {
                         var badgeX = c.width - 40;
                         circles.push(new Circle(badgeX, circleY, 15, "black", obj[i][j].description));
                         circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
+                        continue;
                     }
 
                     circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description));
                     if (obj[i][j].type === "circle") {
                         circles[circles.length - 1].drawCircle();
-                        if (j + 2 !== obj[i].length) {
+                        if (j + 1 !== obj[i].length) {
                             circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
                             if (j === 0) {
                                 circles[i].drawLine(circleX - 15, circleX - 50, circleY, "orange");
                             }
-                        } else {
+                        }
+                        var secondToLastItem = obj[i].length - 2;
+                        if (j === secondToLastItem && obj[i][j+1].type === "Goldenbadge") {
                             circles[i].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
                         }
                     }
 
                     if (obj[i][j].type === "badge") {
                         circles[circles.length - 1].drawBadge(16, 35, 25, "silver", obj[i][j].color);
-                        if (j + 2 !== obj[i].length) {
+                        if (j + 1 !== obj[i].length) {
                             circles[i].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
-                        } else {
-                            circles[i].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
                         }
                     }
                     circleX += 80;
