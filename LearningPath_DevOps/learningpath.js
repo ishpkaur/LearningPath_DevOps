@@ -1,7 +1,7 @@
-$(document).ready(function() {
-    var data = $.getJSON("learningpath.json", function(json) {
-            showDataOnCanvas(json);
-        });
+$(document).ready(function () {
+    var data = $.getJSON("learningpath.json", function (json) {
+        showDataOnCanvas(json);
+    });
     var c = document.getElementById("pathCanvas");
     var ctx = c.getContext("2d");
 
@@ -11,7 +11,7 @@ $(document).ready(function() {
         this.circleY = circleY;
         this.radius = radius;
         this.color = color;
-        this.drawCircle = function() {
+        this.drawCircle = function () {
             ctx.beginPath();
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
@@ -33,7 +33,7 @@ $(document).ready(function() {
             ctx.restore();
         }
 
-        this.drawBadge = function(spikes, outerRadius, innerRadius,backgroundColor, strokeColor) {
+        this.drawBadge = function (spikes, outerRadius, innerRadius, backgroundColor, strokeColor) {
             var rot = Math.PI / 2 * 3;
             var x = this.circleX;
             var y = this.circleY;
@@ -91,14 +91,14 @@ $(document).ready(function() {
             var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
                 if (countPaths === 0) {
-                    drawSplitLines(circleX, circleY, obj[i-1].color, arrayCount);
+                    drawSplitLines(circleX, circleY, obj[i - 1].color, arrayCount);
                     circleY += 250;
                 } else {
                     circleY += 120;
                 }
                 circleX = 100;
                 for (var j = 0; j < obj[i].length; j++) {
-                    
+
                     lineLeftX = circleX + 15;
                     circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description));
                     if (obj[i][j].type === "circle") {
@@ -109,8 +109,12 @@ $(document).ready(function() {
                                 circles[i].drawLine(circleX - 15, circleX - 50, circleY, "orange")
                             }
                         }
-                            
                     }
+                    if (obj[i][j].type === "Goldenbadge") {
+                        circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
+
+                    }
+
                     if (obj[i][j].type === "badge") {
                         circles[circles.length - 1].drawBadge(16, 35, 25, "silver", obj[i][j].color);
                         if ((j + 1) !== obj[i].length) {
@@ -163,7 +167,6 @@ $(document).ready(function() {
         ctx.strokeStyle = lineColor;
         ctx.stroke();
         ctx.closePath();
-
         ctx.restore();
     }
 

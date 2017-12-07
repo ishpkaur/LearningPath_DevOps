@@ -125,6 +125,12 @@
       "id": 21,
       "color": "red",
       "type": "circle"
+    },
+    {
+      "description": "Plan",
+      "id": 75,
+      "color": "red",
+      "type": "Goldenbadge"
     }
   ],
   [
@@ -223,6 +229,12 @@
       "id": 37,
       "color": "green",
       "type": "circle"
+    },
+    {
+      "description": "Code",
+      "id": 76,
+      "color": "green",
+      "type": "Goldenbadge"
     }
   ],
   [
@@ -327,6 +339,12 @@
       "id": 55,
       "color": "blue",
       "type": "circle"
+    },
+    {
+      "description": "Buid & Deploy",
+      "id": 77,
+      "color": "blue",
+      "type": "Goldenbadge"
     }
   ],
   [
@@ -413,6 +431,12 @@
       "id": 64,
       "color": "#F4A460",
       "type": "circle"
+    },
+    {
+      "description": "Test,monitor & learn",
+      "id": 78,
+      "color": "#F4A460",
+      "type": "Goldenbadge"
     }
   ],
   [
