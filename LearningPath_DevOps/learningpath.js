@@ -1,6 +1,6 @@
 "use strict";
 
-$(document).ready(function () {
+$(document).ready(function() {
     var data = $.getJSON("learningpath.json", function(json) {
             showDataOnCanvas(json);
     });
@@ -11,7 +11,7 @@ $(document).ready(function () {
     //c.style.width = "1500px";
     //c.style.height = "1500px";
 
-    $("#zoomIn").click(function () {
+    $("#zoomIn").click(function() {
         //var w = parseInt(c.style.width);
         //var h = parseInt(c.style.height);
         //w = w * 1.1;
@@ -26,12 +26,12 @@ $(document).ready(function () {
         ctx.scale(scale, scale);
 
 
-        $.getJSON("learningpath.json", function (json) {
+        $.getJSON("learningpath.json", function(json) {
             showDataOnCanvas(json);
         });
     });
 
-    $("#zoomOut").click(function () {
+    $("#zoomOut").click(function() {
         //var scale = 1 / 1.1;
         scale -= .1;
 
@@ -48,12 +48,12 @@ $(document).ready(function () {
         ctx.scale(scale, scale);
 
 
-        $.getJSON("learningpath.json", function (json) {
+        $.getJSON("learningpath.json", function(json) {
             showDataOnCanvas(json);
         });
     });
 
-    var multiFillText = function (text, x, y, lineHeight, fitWidth) {
+    var multiFillText = function(text, x, y, lineHeight, fitWidth) {
         var draw = x !== null && y !== null;
 
         text = text.replace(/(\r\n|\n\r|\r|\n)/g, "\n");
@@ -67,7 +67,7 @@ $(document).ready(function () {
             maxHeight = 0,
             maxWidth = 0;
 
-        var printNextLine = function (str) {
+        var printNextLine = function(str) {
             if (draw) {
                 ctx.fillText(str, x, y + lineHeight * currentLine);
             }
@@ -151,13 +151,13 @@ $(document).ready(function () {
         ctx.restore();
     };
 
-    var Circle = function (circleX, circleY, radius, color, description) {
+    var Circle = function(circleX, circleY, radius, color, description) {
 
         this.circleX = circleX;
         this.circleY = circleY;
         this.radius = radius;
         this.color = color;
-        this.drawCircle = function () {
+        this.drawCircle = function() {
             ctx.beginPath();
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
@@ -226,7 +226,6 @@ $(document).ready(function () {
         var circles = [];
 
         var circleX = 100;
-        // var circleX = appconfig.posX;
         var circleY = 70;
         var countPaths = 0;
 
@@ -241,27 +240,32 @@ $(document).ready(function () {
                 }
                 circleX = 100;
                 for (var j = 0; j < obj[i].length; j++) {
-
                     lineLeftX = circleX + 15;
+                    if (obj[i][j].type === "Goldenbadge") {
+                        var badgeX = c.width - 40;
+                        circles.push(new Circle(badgeX, circleY, 15, "black", obj[i][j].description));
+                        circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
+                    }
+
                     circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description));
                     if (obj[i][j].type === "circle") {
                         circles[circles.length - 1].drawCircle();
-                        if (j + 1 !== obj[i].length) {
+                        if (j + 2 !== obj[i].length) {
                             circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
                             if (j === 0) {
                                 circles[i].drawLine(circleX - 15, circleX - 50, circleY, "orange");
                             }
+                        } else {
+                            circles[i].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
                         }
-                    }
-                    if (obj[i][j].type === "Goldenbadge") {
-                        circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
-
                     }
 
                     if (obj[i][j].type === "badge") {
                         circles[circles.length - 1].drawBadge(16, 35, 25, "silver", obj[i][j].color);
-                        if (j + 1 !== obj[i].length) {
+                        if (j + 2 !== obj[i].length) {
                             circles[i].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
+                        } else {
+                            circles[i].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
                         }
                     }
                     circleX += 80;
@@ -276,11 +280,11 @@ $(document).ready(function () {
                 if (i + 1 !== obj.length) {
                     circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i].color);
                 }
-                
             }
                 
-            if (obj[i].type === "badge")
+            if (obj[i].type === "badge") {
                 circles[i].drawBadge(16, 35, 25, "#CD853F", obj[i].color);
+            }
             circleX += 80;
         }
     }
