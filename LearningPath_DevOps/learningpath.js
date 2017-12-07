@@ -64,9 +64,9 @@ $(document).ready(function () {
             ctx.closePath();
             ctx.restore();
             ctx.save();
-            ctx.font = "16px";
+            ctx.font = "10px";
             //ctx.textBaseline = "middle";
-            multiFillText(description, circleX, circleY, 12, 80);
+            multiFillText(description, circleX, circleY, 12, 60);
             ctx.restore();
         }
 
