@@ -1,9 +1,155 @@
+"use strict";
+
 $(document).ready(function () {
-    var data = $.getJSON("learningpath.json", function (json) {
-        showDataOnCanvas(json);
+    var data = $.getJSON("learningpath.json", function(json) {
+            showDataOnCanvas(json);
     });
+    
     var c = document.getElementById("pathCanvas");
     var ctx = c.getContext("2d");
+    var scale = 1;
+    //c.style.width = "1500px";
+    //c.style.height = "1500px";
+
+    $("#zoomIn").click(function () {
+        //var w = parseInt(c.style.width);
+        //var h = parseInt(c.style.height);
+        //w = w * 1.1;
+        //h = h * 1.1;
+        //c.style.width = w + "px";
+        //c.style.height = h + "px";
+        scale += .1;
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.canvas.width = ctx.canvas.width * scale;
+        ctx.canvas.height = ctx.canvas.height * scale;
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.scale(scale, scale);
+
+
+        $.getJSON("learningpath.json", function (json) {
+            showDataOnCanvas(json);
+        });
+    });
+
+    $("#zoomOut").click(function () {
+        //var scale = 1 / 1.1;
+        scale -= .1;
+
+        //var w = parseInt(c.style.width);
+        //var h = parseInt(c.style.height);
+        //w = w * scale;
+        //h = h * scale;
+        //c.style.width = w + "px";
+        //c.style.height = h + "px";
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.canvas.width = ctx.canvas.width / scale;
+        ctx.canvas.height = ctx.canvas.height / scale;
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+        ctx.scale(scale, scale);
+
+
+        $.getJSON("learningpath.json", function (json) {
+            showDataOnCanvas(json);
+        });
+    });
+
+    var multiFillText = function (text, x, y, lineHeight, fitWidth) {
+        var draw = x !== null && y !== null;
+
+        text = text.replace(/(\r\n|\n\r|\r|\n)/g, "\n");
+        var sections = text.split("\n");
+
+        var i,
+            str,
+            wordWidth,
+            words,
+            currentLine = 0,
+            maxHeight = 0,
+            maxWidth = 0;
+
+        var printNextLine = function (str) {
+            if (draw) {
+                ctx.fillText(str, x, y + lineHeight * currentLine);
+            }
+
+            currentLine++;
+            wordWidth = ctx.measureText(str).width;
+            if (wordWidth > maxWidth) {
+                maxWidth = wordWidth;
+            }
+        };
+
+        for (i = 0; i < sections.length; i++) {
+            words = sections[i].split(' ');
+            var index = 1;
+
+            while (words.length > 0 && index <= words.length) {
+
+                str = words.slice(0, index).join(' ');
+                wordWidth = ctx.measureText(str).width;
+
+                if (wordWidth > fitWidth) {
+                    if (index === 1) {
+                        str = words.slice(0, 1).join(' ');
+                        words = words.splice(1);
+                    } else {
+                        str = words.slice(0, index - 1).join(' ');
+                        words = words.splice(index - 1);
+                    }
+
+                    printNextLine(str);
+
+                    index = 1;
+                } else {
+                    index++;
+                }
+            }
+            if (index > 0) {
+                printNextLine(words.join(' '));
+            }
+        }
+
+        maxHeight = lineHeight * currentLine;
+
+        if (!draw) {
+            return {
+                height: maxHeight,
+                width: maxWidth
+            };
+        }
+    };
+
+    var multiMeasureText = function(text, lineHeight, fitWidth) {
+        return multiFillText(text, null, null, lineHeight, fitWidth);
+    };
+
+    var drawSplitLines = function(posX, posY, lineColor, pathCount) {
+        var endPosY = pathCount * 120 + (posY + 130);
+        ctx.save();
+
+        // Go down from badge
+        ctx.beginPath();
+        ctx.moveTo(posX - 80, posY + 35);
+        ctx.lineTo(posX - 80, posY + 100);
+        ctx.strokeStyle = lineColor;
+        ctx.stroke();
+
+        // Go left
+        ctx.moveTo(posX - 80, posY + 100);
+        ctx.lineTo(100 - 50, posY + 100);
+        ctx.strokeStyle = lineColor;
+        ctx.stroke();
+
+
+        // Go down final time
+        ctx.moveTo(100 - 50, posY + 100);
+        ctx.lineTo(100 - 50, endPosY);
+        ctx.strokeStyle = lineColor;
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.restore();
+    };
 
     var Circle = function (circleX, circleY, radius, color, description) {
 
@@ -22,8 +168,7 @@ $(document).ready(function () {
             ctx.closePath();
         };
 
-
-        this.drawLine = function (lineLeftX, lineRightX, posY, lineColor) {
+        this.drawLine = function(lineLeftX, lineRightX, posY, lineColor) {
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(lineLeftX, posY);
@@ -31,14 +176,13 @@ $(document).ready(function () {
             ctx.strokeStyle = lineColor;
             ctx.stroke();
             ctx.restore();
-        }
+        };
 
-        this.drawBadge = function (spikes, outerRadius, innerRadius, backgroundColor, strokeColor) {
+        this.drawBadge = function(spikes, outerRadius, innerRadius, backgroundColor, strokeColor) {
             var rot = Math.PI / 2 * 3;
             var x = this.circleX;
             var y = this.circleY;
             var step = Math.PI / spikes;
-
 
             ctx.save();
             ctx.beginPath();
@@ -68,8 +212,7 @@ $(document).ready(function () {
             //ctx.textBaseline = "middle";
             multiFillText(description, circleX, circleY, 12, 80);
             ctx.restore();
-        }
-
+        };
     };
 
     function showDataOnCanvas(obj) {
@@ -103,10 +246,10 @@ $(document).ready(function () {
                     circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description));
                     if (obj[i][j].type === "circle") {
                         circles[circles.length - 1].drawCircle();
-                        if ((j + 1) !== obj[i].length) {
+                        if (j + 1 !== obj[i].length) {
                             circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
                             if (j === 0) {
-                                circles[i].drawLine(circleX - 15, circleX - 50, circleY, "orange")
+                                circles[i].drawLine(circleX - 15, circleX - 50, circleY, "orange");
                             }
                         }
                     }
@@ -117,7 +260,7 @@ $(document).ready(function () {
 
                     if (obj[i][j].type === "badge") {
                         circles[circles.length - 1].drawBadge(16, 35, 25, "silver", obj[i][j].color);
-                        if ((j + 1) !== obj[i].length) {
+                        if (j + 1 !== obj[i].length) {
                             circles[i].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
                         }
                     }
@@ -130,7 +273,7 @@ $(document).ready(function () {
             circles.push(new Circle(circleX, circleY, 15, "black", obj[i].description));
             if (obj[i].type === "circle") {
                 circles[i].drawCircle();
-                if ((i + 1) !== obj.length) {
+                if (i + 1 !== obj.length) {
                     circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i].color);
                 }
                 
@@ -140,103 +283,5 @@ $(document).ready(function () {
                 circles[i].drawBadge(16, 35, 25, "#CD853F", obj[i].color);
             circleX += 80;
         }
-    }
-
-    var drawSplitLines = function (posX, posY, lineColor, pathCount) {
-        var endPosY = pathCount * 120 + (posY + 130);
-        ctx.save();
-        // with posX and posY you should have the position of the badge. From there you can start drawing a line
-
-        // Go down from badge
-        ctx.beginPath();
-        ctx.moveTo(posX - 80, posY + 35);
-        ctx.lineTo(posX - 80, posY + 100);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-
-        // Go left
-        ctx.moveTo(posX - 80, posY + 100);
-        ctx.lineTo(100 - 50, posY + 100);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-
-
-        // Go down final time
-        ctx.moveTo(100 - 50, posY + 100);
-        ctx.lineTo(100 - 50, endPosY);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-        ctx.closePath();
-        ctx.restore();
-    }
-
-    var multiFillText = function (text, x, y, lineHeight, fitWidth) {
-        var draw = x !== null && y !== null;
-
-        text = text.replace(/(\r\n|\n\r|\r|\n)/g, "\n");
-        sections = text.split("\n");
-
-        var i,
-            str,
-            wordWidth,
-            words,
-            currentLine = 0,
-            maxHeight = 0,
-            maxWidth = 0;
-
-        var printNextLine = function (str) {
-            if (draw) {
-                ctx.fillText(str, x, y + (lineHeight * currentLine));
-            }
-
-            currentLine++;
-            wordWidth = ctx.measureText(str).width;
-            if (wordWidth > maxWidth) {
-                maxWidth = wordWidth;
-            }
-        };
-
-        for (i = 0; i < sections.length; i++) {
-            words = sections[i].split(' ');
-            index = 1;
-
-            while (words.length > 0 && index <= words.length) {
-
-                str = words.slice(0, index).join(' ');
-                wordWidth = ctx.measureText(str).width;
-
-                if (wordWidth > fitWidth) {
-                    if (index === 1) {
-                        str = words.slice(0, 1).join(' ');
-                        words = words.splice(1);
-                    } else {
-                        str = words.slice(0, index - 1).join(' ');
-                        words = words.splice(index - 1);
-                    }
-
-                    printNextLine(str);
-
-                    index = 1;
-                } else {
-                    index++;
-                }
-            }
-            if (index > 0) {
-                printNextLine(words.join(' '));
-            }
-        }
-
-        maxHeight = lineHeight * (currentLine);
-
-        if (!draw) {
-            return {
-                height: maxHeight,
-                width: maxWidth
-            };
-        }
-    };
-
-    var multiMeasureText = function (text, lineHeight, fitWidth) {
-        return multiFillText(text, null, null, lineHeight, fitWidth);
     }
 });
