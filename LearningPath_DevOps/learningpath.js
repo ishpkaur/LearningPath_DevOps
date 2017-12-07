@@ -4,7 +4,6 @@ $(document).ready(function () {
     });
     var c = document.getElementById("pathCanvas");
     var ctx = c.getContext("2d");
-
     var Circle = function (circleX, circleY, radius, color, description) {
 
         this.circleX = circleX;
@@ -71,7 +70,6 @@ $(document).ready(function () {
         }
 
     };
-
     function showDataOnCanvas(obj) {
 
         var arrayCount = 0;
@@ -81,7 +79,6 @@ $(document).ready(function () {
             }
         }
         var circles = [];
-
         var circleX = 100;
         // var circleX = appconfig.posX;
         var circleY = 70;
@@ -111,6 +108,7 @@ $(document).ready(function () {
                         }
                     }
                     if (obj[i][j].type === "Goldenbadge") {
+
                         circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
 
                     }
