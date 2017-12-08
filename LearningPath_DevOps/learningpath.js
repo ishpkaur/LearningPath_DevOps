@@ -4,14 +4,33 @@ $(document).ready(function() {
     var data = $.getJSON("learningpath.json", function(json) {
             showDataOnCanvas(json);
     });
-    
+
+    var circles = [];
     var c = document.getElementById("pathCanvas");
     var ctx = c.getContext("2d");
     var scale = 1;
     //c.style.width = "1500px";
     //c.style.height = "1500px";
 
-    $("#zoomIn").click(function() {
+    $("#pathCanvas").on("click", function(evt) {
+        var mousePos = getMousePos(c, evt);
+        circles.forEach(function (circle) {
+            if (Math.pow(mousePos.x - circle.circleX, 2) + Math.pow(mousePos.y - circle.circleY, 2) < Math.pow(circle.radius, 2)) {
+                console.log("You clicked circle with ID: "+circle.Id);
+            }
+        });
+        console.log("Mouse position: " + mousePos.x + "," + mousePos.y);
+    });
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+            x: evt.clientX - rect.left,
+            y: evt.clientY - rect.top
+        };
+    }
+
+    $("#zoomIn").on("click", function() {
         //var w = parseInt(c.style.width);
         //var h = parseInt(c.style.height);
         //w = w * 1.1;
@@ -31,7 +50,7 @@ $(document).ready(function() {
         });
     });
 
-    $("#zoomOut").click(function() {
+    $("#zoomOut").on("click", function() {
         //var scale = 1 / 1.1;
         scale -= .1;
 
@@ -52,6 +71,15 @@ $(document).ready(function() {
             showDataOnCanvas(json);
         });
     });
+
+    var drawPinkRectangle = function (posX, posY, color) {
+        posX = posX - 70;
+        posY = posY - 60;
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.fillRect(posX, posY, 140, 120);
+        ctx.restore();
+    };
 
     var multiFillText = function(text, x, y, lineHeight, fitWidth) {
         var draw = x !== null && y !== null;
@@ -151,8 +179,9 @@ $(document).ready(function() {
         ctx.restore();
     };
 
-    var Circle = function(circleX, circleY, radius, color, description) {
+    var Circle = function(circleX, circleY, radius, color, description, id) {
 
+        this.Id = id;
         this.circleX = circleX;
         this.circleY = circleY;
         this.radius = radius;
@@ -223,7 +252,6 @@ $(document).ready(function() {
                 arrayCount++;
             }
         }
-        var circles = [];
 
         var circleX = 100;
         var circleY = 70;
@@ -242,16 +270,17 @@ $(document).ready(function() {
                 for (var j = 0; j < obj[i].length; j++) {
                     lineLeftX = circleX + 15;
                     if (obj[i][j].type === "Goldenbadge") {
-                        var badgeX = c.width - 40;
-                        circles.push(new Circle(badgeX, circleY, 15, "black", obj[i][j].description));
+                        var badgeX = c.width - 70;
+                        circles.push(new Circle(badgeX, circleY, 15, "black", obj[i][j].description, obj[i][j].id));
+                        drawPinkRectangle(badgeX, circleY, "rgba(237, 125, 49, 0.75)");
                         circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
                         continue;
                     }
 
-                    circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description));
+                    circles.push(new Circle(circleX, circleY, 15, "black", obj[i][j].description, obj[i][j].id));
                     if (obj[i][j].type === "circle") {
                         circles[circles.length - 1].drawCircle();
-                        if (j + 1 !== obj[i].length) {
+                        if (j + 1 !== obj[i].length && obj[i][j + 1].type !== "Goldenbadge") {
                             circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
                             if (j === 0) {
                                 circles[i].drawLine(circleX - 15, circleX - 50, circleY, "orange");
@@ -275,7 +304,7 @@ $(document).ready(function() {
                 continue;
             }
             
-            circles.push(new Circle(circleX, circleY, 15, "black", obj[i].description));
+            circles.push(new Circle(circleX, circleY, 15, "black", obj[i].description, obj[i].id));
             if (obj[i].type === "circle") {
                 circles[i].drawCircle();
                 if (i + 1 !== obj.length) {
