@@ -272,7 +272,7 @@ $(document).ready(function() {
                     if (obj[i][j].type === "Goldenbadge") {
                         var badgeX = c.width - 70;
                         circles.push(new Circle(badgeX, circleY, 15, "black", obj[i][j].description, obj[i][j].id));
-                        drawPinkRectangle(badgeX, circleY, "rgba(237, 125, 49, 0.75)");
+                        drawPinkRectangle(badgeX, circleY, "rgba(255,228,196,0.75)");
                         circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
                         continue;
                     }
