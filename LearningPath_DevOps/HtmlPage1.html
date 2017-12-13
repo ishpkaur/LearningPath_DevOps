@@ -1,9 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/1.8.2/go-debug.js"></script>
-   
     <script src="Scripts/jquery-3.2.1.js"></script>
     <script src="learningpath.js"></script>
     <meta charset="utf-8" />
@@ -20,10 +18,22 @@
             right: 5px;
             top: 5px;
         }
-        /*#pathCanvas {
-            width: 1500px;
-            height: 1500px;
-         }*/
+        body {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        #pathCanvas {
+            cursor: crosshair;
+            float: left;
+            clear: both;
+        }
     </style>
 </head>
 <body>

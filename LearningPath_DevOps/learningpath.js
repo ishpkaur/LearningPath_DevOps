@@ -8,12 +8,15 @@ $(document).ready(function() {
 });
 
 function init(data) {
-    // var circles = [];
     var c = document.getElementById("pathCanvas");
     var ctx = c.getContext("2d");
     var scale = 1;
-    //c.style.width = "1500px";
-    //c.style.height = "1500px";
+    var zoom = 0.25;
+    var zoomFactor;
+    var iw;
+    var ih;
+    c.addEventListener('mouseout', showDataOnCanvas, false);
+    c.addEventListener('mousemove', move, false);
 
     var circleBadgeList = showDataOnCanvas(data);
     circleBadgeList.forEach(function(circlesBadges) {
@@ -56,56 +59,65 @@ function init(data) {
         });
         // console.log("Mouse position: " + mousePos.x + "," + mousePos.y);
     });
-
-    function getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
+    
+    function move(e) {
+        var pos = getMousePos(c, e);
+        var x = pos.x;
+        var y = pos.y;
+        ctx.scale();  //still to implement
+       // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+    }
+    function getMousePos(c, evt) {
+        var rect = c.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
             y: evt.clientY - rect.top
         };
     }
-
-    $("#zoomIn").on("click", function () {
-        //var w = parseInt(c.style.width);
-        //var h = parseInt(c.style.height);
-        //w = w * 1.1;
-        //h = h * 1.1;
-        //c.style.width = w + "px";
-        //c.style.height = h + "px";
-        scale += .1;
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.canvas.width = ctx.canvas.width * scale;
-        ctx.canvas.height = ctx.canvas.height * scale;
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.scale(scale, scale);
-
-
-        $.getJSON("learningpath.json", function (json) {
-            showDataOnCanvas(json);
-        });
-    });
-
-    $("#zoomOut").on("click", function () {
-        //var scale = 1 / 1.1;
-        scale -= .1;
-
-        //var w = parseInt(c.style.width);
-        //var h = parseInt(c.style.height);
-        //w = w * scale;
-        //h = h * scale;
-        //c.style.width = w + "px";
-        //c.style.height = h + "px";
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.canvas.width = ctx.canvas.width / scale;
-        ctx.canvas.height = ctx.canvas.height / scale;
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.scale(scale, scale);
+    function scale() {
+        ctx.showDataOnCanvas(); // still to implement
+    }
+    //$("#zoomIn").on("click", function () {
+    //    //var w = parseInt(c.style.width);
+    //    //var h = parseInt(c.style.height);
+    //    //w = w * 1.1;
+    //    //h = h * 1.1;
+    //    //c.style.width = w + "px";
+    //    //c.style.height = h + "px";
+    //    scale += .1;
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.canvas.width = ctx.canvas.width * scale;
+    //    ctx.canvas.height = ctx.canvas.height * scale;
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.scale(scale, scale);
 
 
-        $.getJSON("learningpath.json", function (json) {
-            showDataOnCanvas(json);
-        });
-    });
+    //    $.getJSON("learningpath.json", function (json) {
+    //        showDataOnCanvas(json);
+    //    });
+    //});
+
+    //$("#zoomOut").on("click", function () {
+    //    //var scale = 1 / 1.1;
+    //    scale -= .1;
+
+    //    //var w = parseInt(c.style.width);
+    //    //var h = parseInt(c.style.height);
+    //    //w = w * scale;
+    //    //h = h * scale;
+    //    //c.style.width = w + "px";
+    //    //c.style.height = h + "px";
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.canvas.width = ctx.canvas.width / scale;
+    //    ctx.canvas.height = ctx.canvas.height / scale;
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.scale(scale, scale);
+
+
+    //    $.getJSON("learningpath.json", function (json) {
+    //        showDataOnCanvas(json);
+    //    });
+    //});
 
     function drawPinkRectangle(posX, posY, color) {
         posX = posX - 70;
