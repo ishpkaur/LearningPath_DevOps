@@ -6,71 +6,98 @@ $(document).ready(function() {
     });
 
     var circles = [];
-    var c = document.getElementById("pathCanvas");
-    var ctx = c.getContext("2d");
-    var scale = 1;
+
+   
+   // var c = document.getElementById("pathCanvas");
+    //var ctx = c.getContext("2d");
+   // var scale = 1;
+    var c = d3.select("pathCanvas").call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoom)),
+        ctx = c.node().getContext("2d"),
+        width = c.property("width"),
+        height = c.property("height");
+
+    var randomX = d3.randomNormal(width / 2, 80),
+        randomY = d3.randomNormal(height / 2, 80),
+        data = d3.range(2000).map(function () { return [randomX(), randomY()]; });
+    draw(d3.zoomIdentity);
+
+    function zoom() {
+        ctx.clearRect(0, 0, width, height);
+        draw(d3.event.transform);
+    }
+
+    //function draw(transform) {
+    //    var i = -1, n = data.length, d;
+    //    context.beginPath();
+    //    while (++i < n) {
+    //        d = transform.apply(data[i]);
+    //        context.moveTo(d[0], d[1]);
+    //        context.arc(d[0], d[1], 2.5, 0, 2 * Math.PI);
+    //    }
+    //    context.fill();
+    //}
     //c.style.width = "1500px";
     //c.style.height = "1500px";
 
-    $("#pathCanvas").on("click", function(evt) {
-        var mousePos = getMousePos(c, evt);
-        circles.forEach(function (circle) {
-            if (Math.pow(mousePos.x - circle.circleX, 2) + Math.pow(mousePos.y - circle.circleY, 2) < Math.pow(circle.radius, 2)) {
-                console.log("You clicked circle with ID: "+circle.Id);
-            }
-        });
-        console.log("Mouse position: " + mousePos.x + "," + mousePos.y);
-    });
+    //$("#pathCanvas").on("click", function(evt) {
+    //    var mousePos = getMousePos(c, evt);
+    //    circles.forEach(function (circle) {
+    //        if (Math.pow(mousePos.x - circle.circleX, 2) + Math.pow(mousePos.y - circle.circleY, 2) < Math.pow(circle.radius, 2)) {
+    //            console.log("You clicked circle with ID: "+circle.Id);
+    //        }
+    //    });
+    //    console.log("Mouse position: " + mousePos.x + "," + mousePos.y);
+    //});
 
-    function getMousePos(canvas, evt) {
-        var rect = canvas.getBoundingClientRect();
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
-    }
+    //function getMousePos(canvas, evt) {
+    //    var rect = canvas.getBoundingClientRect();
+    //    return {
+    //        x: evt.clientX - rect.left,
+    //        y: evt.clientY - rect.top
+    //    };
+    //}
 
-    $("#zoomIn").on("click", function() {
-        //var w = parseInt(c.style.width);
-        //var h = parseInt(c.style.height);
-        //w = w * 1.1;
-        //h = h * 1.1;
-        //c.style.width = w + "px";
-        //c.style.height = h + "px";
-        scale += .1;
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.canvas.width = ctx.canvas.width * scale;
-        ctx.canvas.height = ctx.canvas.height * scale;
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.scale(scale, scale);
-
-
-        $.getJSON("learningpath.json", function(json) {
-            showDataOnCanvas(json);
-        });
-    });
-
-    $("#zoomOut").on("click", function() {
-        //var scale = 1 / 1.1;
-        scale -= .1;
-
-        //var w = parseInt(c.style.width);
-        //var h = parseInt(c.style.height);
-        //w = w * scale;
-        //h = h * scale;
-        //c.style.width = w + "px";
-        //c.style.height = h + "px";
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.canvas.width = ctx.canvas.width / scale;
-        ctx.canvas.height = ctx.canvas.height / scale;
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.scale(scale, scale);
+    //$("#zoomIn").on("click", function() {
+    //    //var w = parseInt(c.style.width);
+    //    //var h = parseInt(c.style.height);
+    //    //w = w * 1.1;
+    //    //h = h * 1.1;
+    //    //c.style.width = w + "px";
+    //    //c.style.height = h + "px";
+    //    scale += .1;
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.canvas.width = ctx.canvas.width * scale;
+    //    ctx.canvas.height = ctx.canvas.height * scale;
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.scale(scale, scale);
 
 
-        $.getJSON("learningpath.json", function(json) {
-            showDataOnCanvas(json);
-        });
-    });
+    //    $.getJSON("learningpath.json", function(json) {
+    //        showDataOnCanvas(json);
+    //    });
+    //});
+
+    //$("#zoomOut").on("click", function() {
+    //    //var scale = 1 / 1.1;
+    //    scale -= .1;
+
+    //    //var w = parseInt(c.style.width);
+    //    //var h = parseInt(c.style.height);
+    //    //w = w * scale;
+    //    //h = h * scale;
+    //    //c.style.width = w + "px";
+    //    //c.style.height = h + "px";
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.canvas.width = ctx.canvas.width / scale;
+    //    ctx.canvas.height = ctx.canvas.height / scale;
+    //    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //    ctx.scale(scale, scale);
+
+
+    //    $.getJSON("learningpath.json", function(json) {
+    //        showDataOnCanvas(json);
+    //    });
+    //});
 
     var drawPinkRectangle = function (posX, posY, color) {
         posX = posX - 70;
@@ -245,7 +272,6 @@ $(document).ready(function() {
     };
 
     function showDataOnCanvas(obj) {
-
         var arrayCount = 0;
         for (var array = 0; array < obj.length; array++) {
             if (Array.isArray(obj[array])) {
