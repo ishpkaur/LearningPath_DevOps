@@ -19,11 +19,11 @@ $(document).ready(function() {
     var randomX = d3.randomNormal(width / 2, 80),
         randomY = d3.randomNormal(height / 2, 80),
         data = d3.range(2000).map(function () { return [randomX(), randomY()]; });
-    draw(d3.zoomIdentity);
+    draw(d3.zoomIdentity);     // how can i use showdataOncanvas function here.
 
     function zoom() {
         ctx.clearRect(0, 0, width, height);
-        draw(d3.event.transform);
+        draw(d3.event.transform); // how to implement showDataOncanvas function here
     }
 
     //function draw(transform) {
