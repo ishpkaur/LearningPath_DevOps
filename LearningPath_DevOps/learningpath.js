@@ -16,41 +16,20 @@ function init(data) {
     //c.style.height = "1500px";
 
     var circleBadgeList = showDataOnCanvas(data);
-    circleBadgeList.forEach(function(circlesBadges) {
-        if (Array.isArray(circlesBadges)) {
-            circlesBadges.forEach(function(circleBadge) {
-                if (circleBadge.type === "circle") {
-                    circleBadge.drawCircle();
-                }
-
-                if (circleBadge.type === "badge" || circleBadge.type === "goldbadge") {
-                    circleBadge.drawBadge();
-                }
-            });
-        }
-
-        if (circlesBadges.type === "circle") {
-            circlesBadges.drawCircle();
-        }
-
-        if (circlesBadges.type === "badge" || circlesBadges.type === "goldbadge") {
-            circlesBadges.drawBadge();
-        }
-    });
-
+    draw(c, ctx, circleBadgeList);
 
     $("#pathCanvas").on("click", function (evt) {
         var mousePos = getMousePos(c, evt);
         circleBadgeList.forEach(function (circlesBadges) {
             if (Array.isArray(circlesBadges)) {
                 circlesBadges.forEach(function (circleBadge) {
-                    if (Math.pow(mousePos.x - circleBadge.circleX, 2) + Math.pow(mousePos.y - circleBadge.circleY, 2) < Math.pow(circleBadge.radius, 2)) {
+                    if (Math.pow(mousePos.x - circleBadge.posX, 2) + Math.pow(mousePos.y - circleBadge.posY, 2) < Math.pow(circleBadge.radius, 2)) {
                         console.log("You clicked circle with ID: " + circleBadge.Id);
                     }
                 }); 
             }
             
-            if (Math.pow(mousePos.x - circlesBadges.circleX, 2) + Math.pow(mousePos.y - circlesBadges.circleY, 2) < Math.pow(circlesBadges.radius, 2)) {
+            if (Math.pow(mousePos.x - circlesBadges.posX, 2) + Math.pow(mousePos.y - circlesBadges.posY, 2) < Math.pow(circlesBadges.radius, 2)) {
                 console.log("You clicked circle with ID: " + circlesBadges.Id);
             }
         });
@@ -106,15 +85,6 @@ function init(data) {
             showDataOnCanvas(json);
         });
     });
-
-    function drawPinkRectangle(posX, posY, color) {
-        posX = posX - 70;
-        posY = posY - 60;
-        ctx.save();
-        ctx.fillStyle = color;
-        ctx.fillRect(posX, posY, 140, 120);
-        ctx.restore();
-    };
 
     function multiFillText(text, x, y, lineHeight, fitWidth) {
         var draw = x !== null && y !== null;
@@ -186,59 +156,32 @@ function init(data) {
         return multiFillText(text, null, null, lineHeight, fitWidth);
     };
 
-    function drawSplitLines(posX, posY, lineColor, pathCount) {
-        var endPosY = pathCount * 120 + (posY + 130);
-        ctx.save();
-
-        // Go down from badge
-        ctx.beginPath();
-        ctx.moveTo(posX - 80, posY + 35);
-        ctx.lineTo(posX - 80, posY + 100);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-
-        // Go left
-        ctx.moveTo(posX - 80, posY + 100);
-        ctx.lineTo(100 - 50, posY + 100);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-
-
-        // Go down final time
-        ctx.moveTo(100 - 50, posY + 100);
-        ctx.lineTo(100 - 50, endPosY);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-        ctx.closePath();
-
-        ctx.restore();
-    };
-
-    function Circle(id, circleX, circleY, radius, color, description, type, expandable) {
+    function Circle(id, posX, posY, radius, color, lineColor, description, type, expandable) {
 
         this.Id = id;
-        this.circleX = circleX;
-        this.circleY = circleY;
+        this.posX = posX;
+        this.posY = posY;
         this.radius = radius;
         this.color = color;
+        this.lineColor = lineColor;
         this.type = type;
         this.expandable = expandable;
         this.drawCircle = function () {
             ctx.beginPath();
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
-            multiFillText(description, circleX, circleY - 55, 12, 80);
+            multiFillText(description, posX, posY - 55, 12, 80);
             ctx.strokeStyle = this.color;
-            ctx.arc(this.circleX, this.circleY, this.radius, 0, 2 * Math.PI);
+            ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
             ctx.stroke();
             ctx.closePath();
         };
 
-        this.drawLine = function (lineLeftX, lineRightX, posY, lineColor) {
+        this.drawLine = function (lineLeftX, lineRightX, linePosY, lineColor) {
             ctx.save();
             ctx.beginPath();
-            ctx.moveTo(lineLeftX, posY);
-            ctx.lineTo(lineRightX, posY);
+            ctx.moveTo(lineLeftX, linePosY);
+            ctx.lineTo(lineRightX, linePosY);
             ctx.strokeStyle = lineColor;
             ctx.stroke();
             ctx.restore();
@@ -257,6 +200,7 @@ function init(data) {
         this.innerRadius = innerRadius;
         this.fillColor = fillColor;
         this.strokeColor = strokeColor;
+        //this.lineColor = lineColor;
         this.description = description;
         this.type = type;
         this.expandable = expandable;
@@ -325,7 +269,7 @@ function init(data) {
             var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
                 if (countPaths === 0) {
-                    drawSplitLines(circleX, circleY, obj[i - 1].color, arrayCount);
+                    // drawSplitLines(circleX, circleY, obj[i - 1].color, arrayCount);
                     circleY += 250;
                 } else {
                     circleY += 120;
@@ -339,27 +283,27 @@ function init(data) {
                         subPathArray.push(new Badge(obj[i][j].id, badgeX, circleY, 16, 35, 25, "#CD853F", obj[i][j].color, obj[i][j].description, obj[i][j].type, obj[i][j].expandable));
                         // circles.push(subPathArray.concat());
                         // circles.push(new Circle(obj[i][j].id, badgeX, circleY, 15, "black", obj[i][j].description));
-                        drawPinkRectangle(badgeX, circleY, "rgba(237, 125, 49, 0.75)");
+                        // drawPinkRectangle(badgeX, circleY, "rgba(237, 125, 49, 0.75)");
                         // circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
                         continue;
                     }
 
                     if (obj[i][j].type === "circle") {
-                        subPathArray.push(new Circle(obj[i][j].id, circleX, circleY, 15, "black", obj[i][j].description, obj[i][j].type, obj[i][j].expandable));
+                        subPathArray.push(new Circle(obj[i][j].id, circleX, circleY, 15, "black", obj[i][j].color, obj[i][j].description, obj[i][j].type, obj[i][j].expandable));
                         // circles.push(subPathArray.concat());
                         // circles[circles.length - 1].drawCircle();
                         if (j + 1 !== obj[i].length && obj[i][j + 1].type !== "goldbadge") {
                             // circles[i][j].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
-                            subPathArray[j].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
+                            // subPathArray[j].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
                             if (j === 0) {
                                 // circles[i][j].drawLine(circleX - 15, circleX - 50, circleY, "orange");
-                                subPathArray[j].drawLine(circleX - 15, circleX - 50, circleY, "orange");
+                                // subPathArray[j].drawLine(circleX - 15, circleX - 50, circleY, "orange");
                             }
                         }
                         var secondToLastItem = obj[i].length - 2;
                         if (j === secondToLastItem && obj[i][j + 1].type === "goldbadge") {
                             // circles[i][j].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
-                            subPathArray[j].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
+                            // subPathArray[j].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
                         }
                     }
 
@@ -369,7 +313,7 @@ function init(data) {
                         // circles[circles.length - 1].drawBadge(16, 35, 25, "silver", obj[i][j].color);
                         if (j + 1 !== obj[i].length) {
                             // circles[i][j].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
-                            subPathArray[j].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
+                            // subPathArray[j].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
                         }
                     }
                     circleX += 80;
@@ -381,10 +325,10 @@ function init(data) {
             }
 
             if (obj[i].type === "circle") {
-                circles.push(new Circle(obj[i].id, circleX, circleY, 15, "black", obj[i].description, obj[i].type, obj[i].expandable));
+                circles.push(new Circle(obj[i].id, circleX, circleY, 15, "black", obj[i].color, obj[i].description, obj[i].type, obj[i].expandable));
                 // circles[i].drawCircle();
                 if (i + 1 !== obj.length) {
-                    circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i].color);
+                    // circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i].color);
                 }
             }
 
@@ -398,3 +342,109 @@ function init(data) {
         return circles;
     }
 }
+
+function draw(c, ctx, circleBadgeList) {
+    clearCanvas(c, ctx);
+
+    var arrayCount = 0;
+    for (var array = 0; array < circleBadgeList.length; array++) {
+        if (Array.isArray(circleBadgeList[array])) {
+            arrayCount++;
+        }
+    }
+    var countPaths = 0;
+    // var index = 0;
+    // circleBadgeList.forEach(function (circlesBadges) {
+    for (var i = 0; i < circleBadgeList.length; i++) {
+        // var subindex = 0;
+        if (Array.isArray(circleBadgeList[i])) {
+            if (countPaths === 0) {
+                drawSplitLines(ctx, circleBadgeList[i - 1].posX, circleBadgeList[i - 1].posY, circleBadgeList[i - 1].strokeColor, arrayCount);
+            }
+            // circlesBadges.forEach(function (circleBadge) {
+            for (var j = 0; j < circleBadgeList[i].length; j++) {
+                if (circleBadgeList[i][j].type === "goldbadge") {
+                    drawPinkRectangle(ctx, c.width - 70, circleBadgeList[i][j].posY, "rgba(237, 125, 49, 0.75)");
+                    circleBadgeList[i][j].drawBadge();
+                    continue;
+                }
+
+                if (circleBadgeList[i][j].type === "circle") {
+                    if (j !== circleBadgeList[i].length-1 && circleBadgeList[i][j+1].type !== "goldbadge") {
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, circleBadgeList[i][j].posX + 65, circleBadgeList[i][j].posY, circleBadgeList[i][j].lineColor);
+                        if (j === 0) {
+                            circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX - 15, circleBadgeList[i][j].posX - 50, circleBadgeList[i][j].posY, "orange");
+                        }
+                    }
+                    var secondToLastItem = circleBadgeList[i].length - 2;
+                    if (j === secondToLastItem && circleBadgeList[i][j+1].type === "goldbadge") {
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, c.width - 55, circleBadgeList[i][j].posY, circleBadgeList[i][j].lineColor);
+                    }
+                    circleBadgeList[i][j].drawCircle();
+                }
+
+                if (circleBadgeList[i][j].type === "badge" || circleBadgeList[i][j].type === "goldbadge") {
+                    if (j !== circleBadgeList[i].length-1) {
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, circleBadgeList[i][j].posX + 65, circleBadgeList[i][j].posY, circleBadgeList[i][j].color);
+                    }
+                    circleBadgeList[i][j].drawBadge();
+                }
+                // subindex++;
+            };
+            countPaths++;
+        }
+
+        if (circleBadgeList[i].type === "circle") {
+            if (i !== circleBadgeList.length-1) {
+                circleBadgeList[i].drawLine(circleBadgeList[i].posX + 15, circleBadgeList[i].posX + 65, circleBadgeList[i].posY, circleBadgeList[i].lineColor);
+            }
+            circleBadgeList[i].drawCircle();
+        }
+
+        if (circleBadgeList[i].type === "badge" || circleBadgeList[i].type === "goldbadge") {
+            circleBadgeList[i].drawBadge();
+        }
+        // index++;
+    };
+}
+
+function clearCanvas(c, ctx) {
+    ctx.clearRect(0, 0, c.width, c.height);
+};
+
+function drawPinkRectangle(ctx, posX, posY, color) {
+    posX = posX - 70;
+    posY = posY - 60;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.fillRect(posX, posY, 140, 120);
+    ctx.restore();
+};
+
+function drawSplitLines(ctx, posX, posY, lineColor, pathCount) {
+    var endPosY = pathCount * 120 + (posY + 130);
+    ctx.save();
+
+    // Go down from badge
+    ctx.beginPath();
+    ctx.moveTo(posX, posY + 35);
+    ctx.lineTo(posX, posY + 100);
+    ctx.strokeStyle = lineColor;
+    ctx.stroke();
+
+    // Go left
+    ctx.moveTo(posX, posY + 100);
+    ctx.lineTo(100 - 50, posY + 100);
+    ctx.strokeStyle = lineColor;
+    ctx.stroke();
+
+
+    // Go down final time
+    ctx.moveTo(100 - 50, posY + 100);
+    ctx.lineTo(100 - 50, endPosY);
+    ctx.strokeStyle = lineColor;
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.restore();
+};
