@@ -8,22 +8,29 @@ $(document).ready(function() {
 });
 
 function init(data) {
-    var c = document.getElementById("pathCanvas");
-    var ctx = c.getContext("2d");
+    var c = d3.select("#pathCanvas").call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoom)),
+        ctx = c.node().getContext("2d"),
+        width = c.property("width"),
+        height = c.property("height");
+
+    var cv = document.getElementById("pathCanvas");
+    //var ctx = c.getContext("2d");
     var scale = 1;
-    var zoom = 0.25;
     var zoomFactor;
     var iw;
     var ih;
-    c.addEventListener('mouseout', showDataOnCanvas, false);
-    c.addEventListener('mousemove', move, false);
-
-    var circleBadgeList = showDataOnCanvas(data);
+    
+    var circleBadgeList = processData(data);
+    var updatePosList = processData(data);
+    console.log(updatePosList[0].posX, updatePosList[0].posY);
     draw(c, ctx, circleBadgeList);
 
+    //c.addEventListener("mouseout", mouseOut, false);
+    //c.addEventListener("mousemove", move, false);
+
     $("#pathCanvas").on("click", function (evt) {
-        var mousePos = getMousePos(c, evt);
-        circleBadgeList.forEach(function (circlesBadges) {
+        var mousePos = getMousePos(cv, evt);
+        updatePosList.forEach(function (circlesBadges) {
             if (Array.isArray(circlesBadges)) {
                 circlesBadges.forEach(function (circleBadge) {
                     if (Math.pow(mousePos.x - circleBadge.posX, 2) + Math.pow(mousePos.y - circleBadge.posY, 2) < Math.pow(circleBadge.radius, 2)) {
@@ -43,19 +50,79 @@ function init(data) {
         var pos = getMousePos(c, e);
         var x = pos.x;
         var y = pos.y;
-        ctx.scale();  //still to implement
-       // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+        ctx.save();
+        ctx.scale(2, 2);
+        draw(c, ctx, circleBadgeList);
+        ctx.restore();
+        // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
     }
-    function getMousePos(c, evt) {
-        var rect = c.getBoundingClientRect();
+
+    function mouseOut(e) {
+        var pos = getMousePos(c, e);
+        var x = pos.x;
+        var y = pos.y;
+        ctx.save();
+        ctx.scale(1, 1);
+        draw(c, ctx, circleBadgeList);
+        ctx.restore();
+        // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+    }
+
+    function zoom() {
+        var transform = d3.event.transform;
+        console.log(transform);
+        ctx.save();
+        ctx.clearRect(0, 0, width, height);
+        ctx.translate(transform.x, transform.y);
+        ctx.scale(transform.k, transform.k);
+        var index = 0;
+        updatePosList.forEach(function (circlesBadges) {
+            var subindex = 0;
+            if (Array.isArray(circlesBadges)) {
+                circlesBadges.forEach(function (circleBadge) {
+                    circleBadge.posX = circleBadgeList[index][subindex].posX + transform.x;
+                    circleBadge.posY = circleBadgeList[index][subindex].posY + transform.y;
+                    if (circleBadge.hasOwnProperty("radius")) {
+                        console.log(circleBadge.radius);
+                        circleBadge.radius = circleBadgeList[index][subindex].radius * transform.k;
+                    }
+                    //if (circleBadge.hasOwnProperty("innerRadius")) {
+                    //    circleBadge.innerRadius = circleBadge.innerRadius * transform.k;
+                    //}
+                    //if (circleBadge.hasOwnProperty("outerRadius")) {
+                    //    circleBadge.outerRadius = circleBadge.outerRadius * transform.k;
+                    //}
+                    subindex++;
+                });
+            }
+            circlesBadges.posX = circleBadgeList[index].posX + transform.x;
+            circlesBadges.posY = circleBadgeList[index].posY + transform.y;
+            if (circlesBadges.hasOwnProperty("radius")) {
+                console.log(circlesBadges.radius);
+                circlesBadges.radius = circleBadgeList[index].radius * transform.k;
+            }
+            //if (circlesBadges.hasOwnProperty("innerRadius")) {
+            //    circlesBadges.innerRadius = circlesBadges.innerRadius * transform.k;
+            //}
+            //if (circlesBadges.hasOwnProperty("outerRadius")) {
+            //    circlesBadges.outerRadius = circlesBadges.outerRadius * transform.k;
+            //}
+            index++;
+        });
+        //console.log(updatePosList[0].posX, updatePosList[0].posY);
+        //console.log(updatePosList[0]);
+        draw(c, ctx, circleBadgeList);
+        ctx.restore();
+    }
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
             y: evt.clientY - rect.top
         };
     }
-    function scale() {
-        ctx.showDataOnCanvas(); // still to implement
-    }
+
     //$("#zoomIn").on("click", function () {
     //    //var w = parseInt(c.style.width);
     //    //var h = parseInt(c.style.height);
@@ -247,7 +314,7 @@ function init(data) {
             ctx.closePath();
             ctx.restore();
             ctx.save();
-            ctx.font = "10px";
+            ctx.font = "100px";
             //ctx.textBaseline = "middle";
             multiFillText(description, posX, posY, 12, 60);
             ctx.restore();
@@ -264,7 +331,7 @@ function init(data) {
         };
     };
 
-    function showDataOnCanvas(obj) {
+    function processData(obj) {
         var circles = [];
         var arrayCount = 0;
         for (var array = 0; array < obj.length; array++) {
@@ -291,7 +358,7 @@ function init(data) {
                 for (var j = 0; j < obj[i].length; j++) {
                     lineLeftX = circleX + 15;
                     if (obj[i][j].type === "goldbadge") {
-                        var badgeX = c.width - 70;
+                        var badgeX = c.property("width") - 70;
                         subPathArray.push(new Badge(obj[i][j].id, badgeX, circleY, 16, 35, 25, "#CD853F", obj[i][j].color, obj[i][j].description, obj[i][j].type, obj[i][j].expandable));
                         // circles.push(subPathArray.concat());
                         // circles.push(new Circle(obj[i][j].id, badgeX, circleY, 15, "black", obj[i][j].description));
@@ -376,7 +443,7 @@ function draw(c, ctx, circleBadgeList) {
             // circlesBadges.forEach(function (circleBadge) {
             for (var j = 0; j < circleBadgeList[i].length; j++) {
                 if (circleBadgeList[i][j].type === "goldbadge") {
-                    drawPinkRectangle(ctx, c.width - 70, circleBadgeList[i][j].posY, "rgba(237, 125, 49, 0.75)");
+                    drawPinkRectangle(ctx, c.property("width") - 70, circleBadgeList[i][j].posY, "rgba(237, 125, 49, 0.75)");
                     circleBadgeList[i][j].drawBadge();
                     continue;
                 }
@@ -390,7 +457,7 @@ function draw(c, ctx, circleBadgeList) {
                     }
                     var secondToLastItem = circleBadgeList[i].length - 2;
                     if (j === secondToLastItem && circleBadgeList[i][j+1].type === "goldbadge") {
-                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, c.width - 55, circleBadgeList[i][j].posY, circleBadgeList[i][j].lineColor);
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, c.property("width") - 55, circleBadgeList[i][j].posY, circleBadgeList[i][j].lineColor);
                     }
                     circleBadgeList[i][j].drawCircle();
                 }
@@ -421,7 +488,7 @@ function draw(c, ctx, circleBadgeList) {
 }
 
 function clearCanvas(c, ctx) {
-    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.clearRect(0, 0, c.property("width"), c.property("height")/*c.width, c.height*/);
 };
 
 function drawPinkRectangle(ctx, posX, posY, color) {
