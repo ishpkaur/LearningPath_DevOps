@@ -8,52 +8,38 @@ $(document).ready(function() {
 });
 
 function init(data) {
-    var c = document.getElementById("pathCanvas");
-    var ctx = c.getContext("2d");
+    var c = d3.select("#pathCanvas").call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoom)),
+        ctx = c.node().getContext("2d"),
+        width = c.property("width"),
+        height = c.property("height");
+
+    var cv = document.getElementById("pathCanvas");
+    //var ctx = c.getContext("2d");
     var scale = 1;
-    var zoom = 0.25;
     var zoomFactor;
-    var iw = c.width;
-    var ih = c.height;
-    c.addEventListener('mouseout', showDataOnCanvas, false);
-    c.addEventListener('mousemove', move, false);
+    var iw;
+    var ih;
+    
+    var circleBadgeList = processData(data);
+    var updatePosList = processData(data);
+    console.log(updatePosList[0].posX, updatePosList[0].posY);
+    draw(c, ctx, circleBadgeList);
 
-    var circleBadgeList = showDataOnCanvas(data);
-    circleBadgeList.forEach(function(circlesBadges) {
-        if (Array.isArray(circlesBadges)) {
-            circlesBadges.forEach(function(circleBadge) {
-                if (circleBadge.type === "circle") {
-                    circleBadge.drawCircle();
-                }
-
-                if (circleBadge.type === "badge" || circleBadge.type === "goldbadge") {
-                    circleBadge.drawBadge();
-                }
-            });
-        }
-
-        if (circlesBadges.type === "circle") {
-            circlesBadges.drawCircle();
-        }
-
-        if (circlesBadges.type === "badge" || circlesBadges.type === "goldbadge") {
-            circlesBadges.drawBadge();
-        }
-    });
-
+    //c.addEventListener("mouseout", mouseOut, false);
+    //c.addEventListener("mousemove", move, false);
 
     $("#pathCanvas").on("click", function (evt) {
-        var mousePos = getMousePos(c, evt);
-        circleBadgeList.forEach(function (circlesBadges) {
+        var mousePos = getMousePos(cv, evt);
+        updatePosList.forEach(function (circlesBadges) {
             if (Array.isArray(circlesBadges)) {
                 circlesBadges.forEach(function (circleBadge) {
-                    if (Math.pow(mousePos.x - circleBadge.circleX, 2) + Math.pow(mousePos.y - circleBadge.circleY, 2) < Math.pow(circleBadge.radius, 2)) {
+                    if (Math.pow(mousePos.x - circleBadge.posX, 2) + Math.pow(mousePos.y - circleBadge.posY, 2) < Math.pow(circleBadge.radius, 2)) {
                         console.log("You clicked circle with ID: " + circleBadge.Id);
                     }
                 }); 
             }
             
-            if (Math.pow(mousePos.x - circlesBadges.circleX, 2) + Math.pow(mousePos.y - circlesBadges.circleY, 2) < Math.pow(circlesBadges.radius, 2)) {
+            if (Math.pow(mousePos.x - circlesBadges.posX, 2) + Math.pow(mousePos.y - circlesBadges.posY, 2) < Math.pow(circlesBadges.radius, 2)) {
                 console.log("You clicked circle with ID: " + circlesBadges.Id);
             }
         });
@@ -64,19 +50,79 @@ function init(data) {
         var pos = getMousePos(c, e);
         var x = pos.x;
         var y = pos.y;
-        ctx.scale(-x, -y, iw, ih);  //still to implement
-       // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+        ctx.save();
+        ctx.scale(2, 2);
+        draw(c, ctx, circleBadgeList);
+        ctx.restore();
+        // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
     }
-    function getMousePos(c, evt) {
-        var rect = c.getBoundingClientRect();
+
+    function mouseOut(e) {
+        var pos = getMousePos(c, e);
+        var x = pos.x;
+        var y = pos.y;
+        ctx.save();
+        ctx.scale(1, 1);
+        draw(c, ctx, circleBadgeList);
+        ctx.restore();
+        // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+    }
+
+    function zoom() {
+        var transform = d3.event.transform;
+        console.log(transform);
+        ctx.save();
+        ctx.clearRect(0, 0, width, height);
+        ctx.translate(transform.x, transform.y);
+        ctx.scale(transform.k, transform.k);
+        var index = 0;
+        updatePosList.forEach(function (circlesBadges) {
+            var subindex = 0;
+            if (Array.isArray(circlesBadges)) {
+                circlesBadges.forEach(function (circleBadge) {
+                    circleBadge.posX = circleBadgeList[index][subindex].posX + transform.x;
+                    circleBadge.posY = circleBadgeList[index][subindex].posY + transform.y;
+                    if (circleBadge.hasOwnProperty("radius")) {
+                        console.log(circleBadge.radius);
+                        circleBadge.radius = circleBadgeList[index][subindex].radius * transform.k;
+                    }
+                    //if (circleBadge.hasOwnProperty("innerRadius")) {
+                    //    circleBadge.innerRadius = circleBadge.innerRadius * transform.k;
+                    //}
+                    //if (circleBadge.hasOwnProperty("outerRadius")) {
+                    //    circleBadge.outerRadius = circleBadge.outerRadius * transform.k;
+                    //}
+                    subindex++;
+                });
+            }
+            circlesBadges.posX = circleBadgeList[index].posX + transform.x;
+            circlesBadges.posY = circleBadgeList[index].posY + transform.y;
+            if (circlesBadges.hasOwnProperty("radius")) {
+                console.log(circlesBadges.radius);
+                circlesBadges.radius = circleBadgeList[index].radius * transform.k;
+            }
+            //if (circlesBadges.hasOwnProperty("innerRadius")) {
+            //    circlesBadges.innerRadius = circlesBadges.innerRadius * transform.k;
+            //}
+            //if (circlesBadges.hasOwnProperty("outerRadius")) {
+            //    circlesBadges.outerRadius = circlesBadges.outerRadius * transform.k;
+            //}
+            index++;
+        });
+        //console.log(updatePosList[0].posX, updatePosList[0].posY);
+        //console.log(updatePosList[0]);
+        draw(c, ctx, circleBadgeList);
+        ctx.restore();
+    }
+
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
         return {
             x: evt.clientX - rect.left,
             y: evt.clientY - rect.top
         };
     }
-    function scale() {
-        ctx.showDataOnCanvas(); // still to implement
-    }
+
     //$("#zoomIn").on("click", function () {
     //    //var w = parseInt(c.style.width);
     //    //var h = parseInt(c.style.height);
@@ -118,15 +164,6 @@ function init(data) {
     //        showDataOnCanvas(json);
     //    });
     //});
-
-    function drawPinkRectangle(posX, posY, color) {
-        posX = posX - 70;
-        posY = posY - 60;
-        ctx.save();
-        ctx.fillStyle = color;
-        ctx.fillRect(posX, posY, 140, 120);
-        ctx.restore();
-    };
 
     function multiFillText(text, x, y, lineHeight, fitWidth) {
         var draw = x !== null && y !== null;
@@ -198,59 +235,32 @@ function init(data) {
         return multiFillText(text, null, null, lineHeight, fitWidth);
     };
 
-    function drawSplitLines(posX, posY, lineColor, pathCount) {
-        var endPosY = pathCount * 120 + (posY + 130);
-        ctx.save();
-
-        // Go down from badge
-        ctx.beginPath();
-        ctx.moveTo(posX - 80, posY + 35);
-        ctx.lineTo(posX - 80, posY + 100);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-
-        // Go left
-        ctx.moveTo(posX - 80, posY + 100);
-        ctx.lineTo(100 - 50, posY + 100);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-
-
-        // Go down final time
-        ctx.moveTo(100 - 50, posY + 100);
-        ctx.lineTo(100 - 50, endPosY);
-        ctx.strokeStyle = lineColor;
-        ctx.stroke();
-        ctx.closePath();
-
-        ctx.restore();
-    };
-
-    function Circle(id, circleX, circleY, radius, color, description, type, expandable) {
+    function Circle(id, posX, posY, radius, color, lineColor, description, type, expandable) {
 
         this.Id = id;
-        this.circleX = circleX;
-        this.circleY = circleY;
+        this.posX = posX;
+        this.posY = posY;
         this.radius = radius;
         this.color = color;
+        this.lineColor = lineColor;
         this.type = type;
         this.expandable = expandable;
         this.drawCircle = function () {
             ctx.beginPath();
             ctx.textAlign = "center";
             ctx.textBaseline = "bottom";
-            multiFillText(description, circleX, circleY - 55, 12, 80);
+            multiFillText(description, posX, posY - 55, 12, 80);
             ctx.strokeStyle = this.color;
-            ctx.arc(this.circleX, this.circleY, this.radius, 0, 2 * Math.PI);
+            ctx.arc(this.posX, this.posY, this.radius, 0, 2 * Math.PI);
             ctx.stroke();
             ctx.closePath();
         };
 
-        this.drawLine = function (lineLeftX, lineRightX, posY, lineColor) {
+        this.drawLine = function (lineLeftX, lineRightX, linePosY, lineColor) {
             ctx.save();
             ctx.beginPath();
-            ctx.moveTo(lineLeftX, posY);
-            ctx.lineTo(lineRightX, posY);
+            ctx.moveTo(lineLeftX, linePosY);
+            ctx.lineTo(lineRightX, linePosY);
             ctx.strokeStyle = lineColor;
             ctx.stroke();
             ctx.restore();
@@ -269,6 +279,7 @@ function init(data) {
         this.innerRadius = innerRadius;
         this.fillColor = fillColor;
         this.strokeColor = strokeColor;
+        //this.lineColor = lineColor;
         this.description = description;
         this.type = type;
         this.expandable = expandable;
@@ -303,7 +314,9 @@ function init(data) {
             ctx.closePath();
             ctx.restore();
             ctx.save();
-            multiFillText(description, posX, posY - 4, 12, 56);
+            ctx.font = "100px";
+            //ctx.textBaseline = "middle";
+            multiFillText(description, posX, posY, 12, 60);
             ctx.restore();
         };
 
@@ -318,7 +331,7 @@ function init(data) {
         };
     };
 
-    function showDataOnCanvas(obj) {
+    function processData(obj) {
         var circles = [];
         var arrayCount = 0;
         for (var array = 0; array < obj.length; array++) {
@@ -335,7 +348,7 @@ function init(data) {
             var lineLeftX = circleX + 15;
             if (Array.isArray(obj[i])) {
                 if (countPaths === 0) {
-                    drawSplitLines(circleX, circleY, obj[i - 1].color, arrayCount);
+                    // drawSplitLines(circleX, circleY, obj[i - 1].color, arrayCount);
                     circleY += 250;
                 } else {
                     circleY += 120;
@@ -345,31 +358,31 @@ function init(data) {
                 for (var j = 0; j < obj[i].length; j++) {
                     lineLeftX = circleX + 15;
                     if (obj[i][j].type === "goldbadge") {
-                        var badgeX = c.width - 70;
+                        var badgeX = c.property("width") - 70;
                         subPathArray.push(new Badge(obj[i][j].id, badgeX, circleY, 16, 35, 25, "#CD853F", obj[i][j].color, obj[i][j].description, obj[i][j].type, obj[i][j].expandable));
                         // circles.push(subPathArray.concat());
                         // circles.push(new Circle(obj[i][j].id, badgeX, circleY, 15, "black", obj[i][j].description));
-                        drawPinkRectangle(badgeX, circleY, "rgba(237, 125, 49, 0.75)");
+                        // drawPinkRectangle(badgeX, circleY, "rgba(237, 125, 49, 0.75)");
                         // circles[circles.length - 1].drawBadge(16, 35, 25, "#DAA520", "red");
                         continue;
                     }
 
                     if (obj[i][j].type === "circle") {
-                        subPathArray.push(new Circle(obj[i][j].id, circleX, circleY, 15, "black", obj[i][j].description, obj[i][j].type, obj[i][j].expandable));
+                        subPathArray.push(new Circle(obj[i][j].id, circleX, circleY, 15, "black", obj[i][j].color, obj[i][j].description, obj[i][j].type, obj[i][j].expandable));
                         // circles.push(subPathArray.concat());
                         // circles[circles.length - 1].drawCircle();
                         if (j + 1 !== obj[i].length && obj[i][j + 1].type !== "goldbadge") {
                             // circles[i][j].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
-                            subPathArray[j].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
+                            // subPathArray[j].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i][j].color);
                             if (j === 0) {
                                 // circles[i][j].drawLine(circleX - 15, circleX - 50, circleY, "orange");
-                                subPathArray[j].drawLine(circleX - 15, circleX - 50, circleY, "orange");
+                                // subPathArray[j].drawLine(circleX - 15, circleX - 50, circleY, "orange");
                             }
                         }
                         var secondToLastItem = obj[i].length - 2;
                         if (j === secondToLastItem && obj[i][j + 1].type === "goldbadge") {
                             // circles[i][j].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
-                            subPathArray[j].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
+                            // subPathArray[j].drawLine(lineLeftX, c.width - 55, circleY, obj[i][j].color);
                         }
                     }
 
@@ -379,7 +392,7 @@ function init(data) {
                         // circles[circles.length - 1].drawBadge(16, 35, 25, "silver", obj[i][j].color);
                         if (j + 1 !== obj[i].length) {
                             // circles[i][j].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
-                            subPathArray[j].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
+                            // subPathArray[j].drawLine(lineLeftX + 15, lineLeftX + 50, circleY, obj[i][j].color);
                         }
                     }
                     circleX += 80;
@@ -391,10 +404,10 @@ function init(data) {
             }
 
             if (obj[i].type === "circle") {
-                circles.push(new Circle(obj[i].id, circleX, circleY, 15, "black", obj[i].description, obj[i].type, obj[i].expandable));
+                circles.push(new Circle(obj[i].id, circleX, circleY, 15, "black", obj[i].color, obj[i].description, obj[i].type, obj[i].expandable));
                 // circles[i].drawCircle();
                 if (i + 1 !== obj.length) {
-                    circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i].color);
+                    // circles[i].drawLine(lineLeftX, lineLeftX + 50, circleY, obj[i].color);
                 }
             }
 
@@ -408,3 +421,109 @@ function init(data) {
         return circles;
     }
 }
+
+function draw(c, ctx, circleBadgeList) {
+    clearCanvas(c, ctx);
+
+    var arrayCount = 0;
+    for (var array = 0; array < circleBadgeList.length; array++) {
+        if (Array.isArray(circleBadgeList[array])) {
+            arrayCount++;
+        }
+    }
+    var countPaths = 0;
+    // var index = 0;
+    // circleBadgeList.forEach(function (circlesBadges) {
+    for (var i = 0; i < circleBadgeList.length; i++) {
+        // var subindex = 0;
+        if (Array.isArray(circleBadgeList[i])) {
+            if (countPaths === 0) {
+                drawSplitLines(ctx, circleBadgeList[i - 1].posX, circleBadgeList[i - 1].posY, circleBadgeList[i - 1].strokeColor, arrayCount);
+            }
+            // circlesBadges.forEach(function (circleBadge) {
+            for (var j = 0; j < circleBadgeList[i].length; j++) {
+                if (circleBadgeList[i][j].type === "goldbadge") {
+                    drawPinkRectangle(ctx, c.property("width") - 70, circleBadgeList[i][j].posY, "rgba(237, 125, 49, 0.75)");
+                    circleBadgeList[i][j].drawBadge();
+                    continue;
+                }
+
+                if (circleBadgeList[i][j].type === "circle") {
+                    if (j !== circleBadgeList[i].length-1 && circleBadgeList[i][j+1].type !== "goldbadge") {
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, circleBadgeList[i][j].posX + 65, circleBadgeList[i][j].posY, circleBadgeList[i][j].lineColor);
+                        if (j === 0) {
+                            circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX - 15, circleBadgeList[i][j].posX - 50, circleBadgeList[i][j].posY, "orange");
+                        }
+                    }
+                    var secondToLastItem = circleBadgeList[i].length - 2;
+                    if (j === secondToLastItem && circleBadgeList[i][j+1].type === "goldbadge") {
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, c.property("width") - 55, circleBadgeList[i][j].posY, circleBadgeList[i][j].lineColor);
+                    }
+                    circleBadgeList[i][j].drawCircle();
+                }
+
+                if (circleBadgeList[i][j].type === "badge" || circleBadgeList[i][j].type === "goldbadge") {
+                    if (j !== circleBadgeList[i].length-1) {
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, circleBadgeList[i][j].posX + 65, circleBadgeList[i][j].posY, circleBadgeList[i][j].color);
+                    }
+                    circleBadgeList[i][j].drawBadge();
+                }
+                // subindex++;
+            };
+            countPaths++;
+        }
+
+        if (circleBadgeList[i].type === "circle") {
+            if (i !== circleBadgeList.length-1) {
+                circleBadgeList[i].drawLine(circleBadgeList[i].posX + 15, circleBadgeList[i].posX + 65, circleBadgeList[i].posY, circleBadgeList[i].lineColor);
+            }
+            circleBadgeList[i].drawCircle();
+        }
+
+        if (circleBadgeList[i].type === "badge" || circleBadgeList[i].type === "goldbadge") {
+            circleBadgeList[i].drawBadge();
+        }
+        // index++;
+    };
+}
+
+function clearCanvas(c, ctx) {
+    ctx.clearRect(0, 0, c.property("width"), c.property("height")/*c.width, c.height*/);
+};
+
+function drawPinkRectangle(ctx, posX, posY, color) {
+    posX = posX - 70;
+    posY = posY - 60;
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.fillRect(posX, posY, 140, 120);
+    ctx.restore();
+};
+
+function drawSplitLines(ctx, posX, posY, lineColor, pathCount) {
+    var endPosY = pathCount * 120 + (posY + 130);
+    ctx.save();
+
+    // Go down from badge
+    ctx.beginPath();
+    ctx.moveTo(posX, posY + 35);
+    ctx.lineTo(posX, posY + 100);
+    ctx.strokeStyle = lineColor;
+    ctx.stroke();
+
+    // Go left
+    ctx.moveTo(posX, posY + 100);
+    ctx.lineTo(100 - 50, posY + 100);
+    ctx.strokeStyle = lineColor;
+    ctx.stroke();
+
+
+    // Go down final time
+    ctx.moveTo(100 - 50, posY + 100);
+    ctx.lineTo(100 - 50, endPosY);
+    ctx.strokeStyle = lineColor;
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.restore();
+};
