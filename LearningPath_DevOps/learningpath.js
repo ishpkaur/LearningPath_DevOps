@@ -13,8 +13,8 @@ function init(data) {
     var scale = 1;
     var zoom = 0.25;
     var zoomFactor;
-    var iw;
-    var ih;
+    var iw = c.width;
+    var ih = c.height;
     c.addEventListener('mouseout', showDataOnCanvas, false);
     c.addEventListener('mousemove', move, false);
 
@@ -64,7 +64,7 @@ function init(data) {
         var pos = getMousePos(c, e);
         var x = pos.x;
         var y = pos.y;
-        ctx.scale();  //still to implement
+        ctx.scale(-x, -y, iw, ih);  //still to implement
        // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
     }
     function getMousePos(c, evt) {
@@ -303,9 +303,7 @@ function init(data) {
             ctx.closePath();
             ctx.restore();
             ctx.save();
-            ctx.font = "10px";
-            //ctx.textBaseline = "middle";
-            multiFillText(description, posX, posY, 12, 60);
+            multiFillText(description, posX, posY - 4, 12, 56);
             ctx.restore();
         };
 
