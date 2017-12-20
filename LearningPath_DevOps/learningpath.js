@@ -30,6 +30,7 @@ function init(data) {
 
     $("#pathCanvas").on("click", function (evt) {
         var mousePos = getMousePos(cv, evt);
+        console.log(updatePosList[0]);
         updatePosList.forEach(function (circlesBadges) {
             if (Array.isArray(circlesBadges)) {
                 circlesBadges.forEach(function (circleBadge) {
@@ -38,12 +39,12 @@ function init(data) {
                     }
                 }); 
             }
-            
+
             if (Math.pow(mousePos.x - circlesBadges.posX, 2) + Math.pow(mousePos.y - circlesBadges.posY, 2) < Math.pow(circlesBadges.radius, 2)) {
                 console.log("You clicked circle with ID: " + circlesBadges.Id);
             }
         });
-        // console.log("Mouse position: " + mousePos.x + "," + mousePos.y);
+        console.log("Mouse position: " + mousePos.x + "," + mousePos.y);
     });
     
     function move(e) {
@@ -80,10 +81,9 @@ function init(data) {
             var subindex = 0;
             if (Array.isArray(circlesBadges)) {
                 circlesBadges.forEach(function (circleBadge) {
-                    circleBadge.posX = circleBadgeList[index][subindex].posX + transform.x;
-                    circleBadge.posY = circleBadgeList[index][subindex].posY + transform.y;
+                    circleBadge.posX = circleBadgeList[index][subindex].posX * transform.k + transform.x;
+                    circleBadge.posY = circleBadgeList[index][subindex].posY * transform.k + transform.y;
                     if (circleBadge.hasOwnProperty("radius")) {
-                        console.log(circleBadge.radius);
                         circleBadge.radius = circleBadgeList[index][subindex].radius * transform.k;
                     }
                     //if (circleBadge.hasOwnProperty("innerRadius")) {
@@ -95,10 +95,10 @@ function init(data) {
                     subindex++;
                 });
             }
-            circlesBadges.posX = circleBadgeList[index].posX + transform.x;
-            circlesBadges.posY = circleBadgeList[index].posY + transform.y;
+            circlesBadges.posX = circleBadgeList[index].posX * transform.k + transform.x;
+            circlesBadges.posY = circleBadgeList[index].posY * transform.k + transform.y;
             if (circlesBadges.hasOwnProperty("radius")) {
-                console.log(circlesBadges.radius);
+                // console.log(circlesBadges.radius);
                 circlesBadges.radius = circleBadgeList[index].radius * transform.k;
             }
             //if (circlesBadges.hasOwnProperty("innerRadius")) {
@@ -229,11 +229,11 @@ function init(data) {
                 width: maxWidth
             };
         }
-    };
+    }
 
     function multiMeasureText(text, lineHeight, fitWidth) {
         return multiFillText(text, null, null, lineHeight, fitWidth);
-    };
+    }
 
     function Circle(id, posX, posY, radius, color, lineColor, description, type, expandable) {
 
@@ -267,7 +267,7 @@ function init(data) {
         };
 
         
-    };
+    }
 
     function Badge(id, posX, posY, spikes, outerRadius, innerRadius, fillColor, strokeColor, description, type, expandable) {
 
@@ -329,7 +329,7 @@ function init(data) {
             ctx.stroke();
             ctx.restore();
         };
-    };
+    }
 
     function processData(obj) {
         var circles = [];
@@ -464,12 +464,12 @@ function draw(c, ctx, circleBadgeList) {
 
                 if (circleBadgeList[i][j].type === "badge" || circleBadgeList[i][j].type === "goldbadge") {
                     if (j !== circleBadgeList[i].length-1) {
-                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, circleBadgeList[i][j].posX + 65, circleBadgeList[i][j].posY, circleBadgeList[i][j].color);
+                        circleBadgeList[i][j].drawLine(circleBadgeList[i][j].posX + 15, circleBadgeList[i][j].posX + 65, circleBadgeList[i][j].posY, circleBadgeList[i][j].strokeColor);
                     }
                     circleBadgeList[i][j].drawBadge();
                 }
                 // subindex++;
-            };
+            }
             countPaths++;
         }
 
@@ -484,12 +484,12 @@ function draw(c, ctx, circleBadgeList) {
             circleBadgeList[i].drawBadge();
         }
         // index++;
-    };
+    }
 }
 
 function clearCanvas(c, ctx) {
     ctx.clearRect(0, 0, c.property("width"), c.property("height")/*c.width, c.height*/);
-};
+}
 
 function drawPinkRectangle(ctx, posX, posY, color) {
     posX = posX - 70;
@@ -498,7 +498,7 @@ function drawPinkRectangle(ctx, posX, posY, color) {
     ctx.fillStyle = color;
     ctx.fillRect(posX, posY, 140, 120);
     ctx.restore();
-};
+}
 
 function drawSplitLines(ctx, posX, posY, lineColor, pathCount) {
     var endPosY = pathCount * 120 + (posY + 130);
@@ -526,4 +526,4 @@ function drawSplitLines(ctx, posX, posY, lineColor, pathCount) {
     ctx.closePath();
 
     ctx.restore();
-};
+}
