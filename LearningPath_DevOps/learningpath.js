@@ -22,7 +22,6 @@ function init(data) {
     
     var circleBadgeList = processData(data);
     var updatePosList = processData(data);
-    console.log(updatePosList[0].posX, updatePosList[0].posY);
     draw(c, ctx, circleBadgeList);
 
     //c.addEventListener("mouseout", mouseOut, false);
@@ -30,21 +29,19 @@ function init(data) {
 
     $("#pathCanvas").on("click", function (evt) {
         var mousePos = getMousePos(cv, evt);
-        console.log(updatePosList[0]);
         updatePosList.forEach(function (circlesBadges) {
             if (Array.isArray(circlesBadges)) {
                 circlesBadges.forEach(function (circleBadge) {
                     if (Math.pow(mousePos.x - circleBadge.posX, 2) + Math.pow(mousePos.y - circleBadge.posY, 2) < Math.pow(circleBadge.radius, 2)) {
-                        console.log("You clicked circle with ID: " + circleBadge.Id);
+                        // function to collapse
                     }
                 }); 
             }
 
             if (Math.pow(mousePos.x - circlesBadges.posX, 2) + Math.pow(mousePos.y - circlesBadges.posY, 2) < Math.pow(circlesBadges.radius, 2)) {
-                console.log("You clicked circle with ID: " + circlesBadges.Id);
+                // function to collapse
             }
         });
-        console.log("Mouse position: " + mousePos.x + "," + mousePos.y);
     });
     
     function move(e) {
@@ -71,7 +68,6 @@ function init(data) {
 
     function zoom() {
         var transform = d3.event.transform;
-        console.log(transform);
         ctx.save();
         ctx.clearRect(0, 0, width, height);
         ctx.translate(transform.x, transform.y);
@@ -165,7 +161,7 @@ function init(data) {
     //    });
     //});
 
-    function multiFillText(text, x, y, lineHeight, fitWidth) {
+    function multiFillText(text, x, y, lineHeight, fitWidth, isBadge = false) {
         var draw = x !== null && y !== null;
 
         text = text.replace(/(\r\n|\n\r|\r|\n)/g, "\n");
@@ -177,11 +173,30 @@ function init(data) {
             words,
             currentLine = 0,
             maxHeight = 0,
-            maxWidth = 0;
+            maxWidth = 0,
+            rows = 0;
 
         var printNextLine = function (str) {
             if (draw) {
+                var tempCl = currentLine;
+                if (!isEven(rows) && isBadge) {
+                    if (rows === 1) {
+                        lineHeight = 6;
+                        currentLine = 1;
+                    }
+                    if (rows === 3 && currentLine === 1) {
+                        lineHeight = 6;
+                    }
+                    if (rows === 3 && currentLine === 0) {
+                        lineHeight = -6;
+                        currentLine = 1;
+                    }
+                    if (rows === 3 && currentLine === 2) {
+                        lineHeight = 9;
+                    }
+                }
                 ctx.fillText(str, x, y + lineHeight * currentLine);
+                currentLine = tempCl;
             }
 
             currentLine++;
@@ -191,6 +206,39 @@ function init(data) {
             }
         };
 
+        for (i = 0; i < sections.length; i++) {
+            words = sections[i].split(' ');
+            var index = 1;
+
+            while (words.length > 0 && index <= words.length) {
+
+                str = words.slice(0, index).join(' ');
+                wordWidth = ctx.measureText(str).width;
+
+                if (wordWidth > fitWidth) {
+                    if (index === 1) {
+                        str = words.slice(0, 1).join(' ');
+                        words = words.splice(1);
+                    } else {
+                        str = words.slice(0, index - 1).join(' ');
+                        words = words.splice(index - 1);
+                    }
+
+                    // printNextLine(str);
+                    rows++;
+                    index = 1;
+                    
+                } else {
+                    index++;
+                }
+            }
+            if (index > 0) {
+                rows++;
+                // printNextLine(words.join(' '));
+            }
+        }
+
+        currentLine = 0;
         for (i = 0; i < sections.length; i++) {
             words = sections[i].split(' ');
             var index = 1;
@@ -256,12 +304,12 @@ function init(data) {
             ctx.closePath();
         };
 
-        this.drawLine = function (lineLeftX, lineRightX, linePosY, lineColor) {
+        this.drawLine = function (lineLeftX, lineRightX, linePosY, lineColour) {
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(lineLeftX, linePosY);
             ctx.lineTo(lineRightX, linePosY);
-            ctx.strokeStyle = lineColor;
+            ctx.strokeStyle = lineColour;
             ctx.stroke();
             ctx.restore();
         };
@@ -316,7 +364,7 @@ function init(data) {
             ctx.save();
             ctx.font = "100px";
             //ctx.textBaseline = "middle";
-            multiFillText(description, posX, posY, 12, 60);
+            multiFillText(description, posX, posY, 12, 60, true);
             ctx.restore();
         };
 
@@ -526,4 +574,8 @@ function drawSplitLines(ctx, posX, posY, lineColor, pathCount) {
     ctx.closePath();
 
     ctx.restore();
+}
+
+function isEven(n) {
+    return n % 2 === 0;
 }
