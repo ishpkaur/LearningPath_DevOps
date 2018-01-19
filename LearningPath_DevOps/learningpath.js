@@ -8,7 +8,7 @@ $(document).ready(function() {
 });
 
 function init(data) {
-    var c = d3.select("#pathCanvas").call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoom)),
+    var c = d3.select("#pathCanvas").call(d3.zoom().scaleExtent([1, 8]).on("zoom", zoom)).on("click", expand),
         ctx = c.node().getContext("2d"),
         width = c.property("width"),
         height = c.property("height");
@@ -24,16 +24,43 @@ function init(data) {
     var updatePosList = processData(data);
     draw(c, ctx, circleBadgeList);
 
-    //c.addEventListener("mouseout", mouseOut, false);
+    //c.addEventListener("mouseout", mouseOut, false);s
     //c.addEventListener("mousemove", move, false);
 
-    $("#pathCanvas").on("click", function (evt) {
-        var mousePos = getMousePos(cv, evt);
+    /*$("#pathCanvas")*/function expand() {
+        var mousePos = getMousePos(cv, d3.event);
+        var index = 0;
         updatePosList.forEach(function (circlesBadges) {
             if (Array.isArray(circlesBadges)) {
+                var si = 0;
                 circlesBadges.forEach(function (circleBadge) {
-                    if (Math.pow(mousePos.x - circleBadge.posX, 2) + Math.pow(mousePos.y - circleBadge.posY, 2) < Math.pow(circleBadge.radius, 2)) {
+                    if (Math.pow(mousePos.x - circleBadge.posX, 2) + Math.pow(mousePos.y - circleBadge.posY, 2) < Math.pow(circleBadge.radius, 2) && circleBadge.expandable) {
                         // function to collapse
+                        if (circleBadgeList[index][si].expanded) {
+                            circleBadgeList[index][si].expanded = false;
+                            si++;
+                            console.log("Off");
+                            zoom();
+                            //d3.zoomTransform(c.node()).k = 1;
+                            //d3.zoomTransform(c.node()).x = 0;
+                            //d3.zoomTransform(c.node()).y = 0;
+                            //console.log(d3.zoomTransform(c.node()).k);
+                            //ctx.save();
+                            //draw(c, ctx, circleBadgeList);
+                            //ctx.restore();
+                            return;
+                        }
+                        if (circleBadgeList[index][si].expanded === false) {
+                            circleBadgeList[index][si].expanded = true;
+                            si++;
+                            console.log("On");
+                            zoom();
+                            //d3.zoomTransform(c.node()).k = 1;
+                            //d3.zoomTransform(c.node()).x = 0;
+                            //d3.zoomTransform(c.node()).y = 0;
+                            //draw(c, ctx, circleBadgeList);
+                            return;
+                        }
                     }
                 }); 
             }
@@ -41,29 +68,34 @@ function init(data) {
             if (Math.pow(mousePos.x - circlesBadges.posX, 2) + Math.pow(mousePos.y - circlesBadges.posY, 2) < Math.pow(circlesBadges.radius, 2)) {
                 // function to collapse
             }
+            index++;
         });
-    });
+    };
     
-    function move(e) {
-        var pos = getMousePos(c, e);
-        var x = pos.x;
-        var y = pos.y;
-        ctx.save();
-        ctx.scale(2, 2);
-        draw(c, ctx, circleBadgeList);
-        ctx.restore();
-        // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
-    }
+    //function move(e) {
+    //    var pos = getMousePos(c, e);
+    //    var x = pos.x;
+    //    var y = pos.y;
+    //    ctx.save();
+    //    ctx.scale(2, 2);
+    //    draw(c, ctx, circleBadgeList);
+    //    ctx.restore();
+    //    // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+    //}
 
-    function mouseOut(e) {
-        var pos = getMousePos(c, e);
-        var x = pos.x;
-        var y = pos.y;
-        ctx.save();
-        ctx.scale(1, 1);
-        draw(c, ctx, circleBadgeList);
-        ctx.restore();
-        // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+    //function mouseOut(e) {
+    //    var pos = getMousePos(c, e);
+    //    var x = pos.x;
+    //    var y = pos.y;
+    //    ctx.save();
+    //    ctx.scale(1, 1);
+    //    draw(c, ctx, circleBadgeList);
+    //    ctx.restore();
+    //    // ctx.showDataOnCanvas(data, -x, -y, iw, ih);
+    //}
+
+    function test(testje) {
+        console.log(testje);
     }
 
     function zoom() {
@@ -114,8 +146,8 @@ function init(data) {
     function getMousePos(canvas, evt) {
         var rect = canvas.getBoundingClientRect();
         return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
+            x: evt.pageX - rect.left,
+            y: evt.pageY - rect.top
         };
     }
 
@@ -293,6 +325,7 @@ function init(data) {
         this.lineColor = lineColor;
         this.type = type;
         this.expandable = expandable;
+        this.expanded = expandable;
         this.drawCircle = function () {
             ctx.beginPath();
             ctx.textAlign = "center";
@@ -331,6 +364,7 @@ function init(data) {
         this.description = description;
         this.type = type;
         this.expandable = expandable;
+        this.expanded = expandable;
 
         this.drawBadge = function () {
             var rot = Math.PI / 2 * 3;
